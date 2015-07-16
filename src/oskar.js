@@ -275,7 +275,7 @@ Oskar = (function() {
     } else if (messageType === 'faq') {
       statusMsg = OskarTexts.faq;
     } else {
-      statusMsg = OskarTexts[messageType][random - 1];
+      statusMsg = OskarTexts[messageType];
     }
     if (userId && statusMsg) {
       return this.slack.postMessage(userId, statusMsg);
