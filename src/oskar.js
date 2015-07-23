@@ -1,5 +1,9 @@
-var InputHelper, MongoClient, OnboardingHelper, Oskar, OskarTexts, SlackClient, TimeHelper, express, routes,
+var InputHelper, MongoClient, OnboardingHelper, Oskar, OskarTexts, SlackClient, TimeHelper, express, routes, typeIsArray,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+typeIsArray = Array.isArray || function(value) {
+  return {}.toString.call(value) === '[object Array]';
+};
 
 express = require('express');
 
@@ -284,7 +288,12 @@ Oskar = (function() {
     } else if (messageType === 'faq') {
       statusMsg = OskarTexts.faq;
     } else {
-      statusMsg = OskarTexts[messageType];
+      if (typeIsArray(OskarTexts[messageType])) {
+        random = Math.floor(Math.random() * OskarTexts[messageType].length);
+        statusMsg = OskarTexts[messageType][random];
+      } else {
+        statusMsg = OskarTexts[messageType];
+      }
     }
     if (userId && statusMsg) {
       return this.slack.postMessage(userId, statusMsg);
@@ -294,14 +303,12 @@ Oskar = (function() {
   Oskar.prototype.checkForUserStatus = function(slack) {
     var userIds;
     userIds = slack.getUserIds();
-    console.log(userIds);
     return userIds.forEach(function(userId) {
       var data;
       data = {
         userId: userId,
         status: 'triggered'
       };
-      console.log('sent presence event');
       return slack.emit('presence', data);
     });
   };

@@ -1,3 +1,6 @@
+# polyfill for isArray method
+typeIsArray = Array.isArray || ( value ) -> return {}.toString.call( value ) is '[object Array]'
+
 express          = require 'express'
 MongoClient      = require './modules/mongoClient'
 SlackClient      = require './modules/slackClient'
@@ -262,8 +265,13 @@ class Oskar
     else if messageType is 'faq'
       statusMsg = OskarTexts.faq
 
-    # everything else
-    else statusMsg = OskarTexts[messageType]
+    # everything else, if array choose random string
+    else
+      if typeIsArray OskarTexts[messageType]
+        random = Math.floor(Math.random() * OskarTexts[messageType].length)
+        statusMsg = OskarTexts[messageType][random]
+      else
+        statusMsg = OskarTexts[messageType]
 
     if userId && statusMsg
       @slack.postMessage(userId, statusMsg)
@@ -271,12 +279,10 @@ class Oskar
   # interval to request feedback every hour
   checkForUserStatus: (slack) =>
     userIds = slack.getUserIds()
-    console.log userIds
     userIds.forEach (userId) ->
       data =
         userId: userId
         status: 'triggered'
-      console.log 'sent presence event'
       slack.emit 'presence', data
 
 module.exports = Oskar
