@@ -12,12 +12,16 @@
       "description": "Your team's Slackbot token (create a new token here: https://yourteam.slack.com/services/new/bot)",
       "required": true
     },
+    'CHANNEL_ID': {
+      "description": "The channel that all user notifications go into. If not available, Oskar is going to ping each user individually"
+      "required": false
+    },
     "DISABLED_USERS": {
-      "description": "Optional: disable users if you want specific people on your team to not receive any Oskar messages at all",
+      "description": "Optional: disable users if you want specific people on your team to not receive any Oskar messages at all. Find your user IDs here: https://api.slack.com/methods/users.list/test",
       "required": false
     },
     "DISABLED_CHANNELS": {
-      "description": "Optional: disable channels that Oskar is part of (you should disable the default channel that Slack added)",
+      "description": "Optional: disable channels that Oskar is part of (you should disable the default channel that Slack added). Find your channel IDs here: https://api.slack.com/methods/channels.list/test",
       "required": false
     },
     "AUTH_USERNAME": {
