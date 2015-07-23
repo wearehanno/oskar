@@ -271,10 +271,12 @@ class Oskar
   # interval to request feedback every hour
   checkForUserStatus: (slack) =>
     userIds = slack.getUserIds()
+    console.log userIds
     userIds.forEach (userId) ->
       data =
         userId: userId
         status: 'triggered'
+      console.log 'sent presence event'
       slack.emit 'presence', data
 
 module.exports = Oskar

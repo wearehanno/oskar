@@ -294,12 +294,14 @@ Oskar = (function() {
   Oskar.prototype.checkForUserStatus = function(slack) {
     var userIds;
     userIds = slack.getUserIds();
+    console.log(userIds);
     return userIds.forEach(function(userId) {
       var data;
       data = {
         userId: userId,
         status: 'triggered'
       };
+      console.log('sent presence event');
       return slack.emit('presence', data);
     });
   };
