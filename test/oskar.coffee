@@ -68,6 +68,9 @@ describe 'oskar', ->
 
   describe 'HelperMethods', ->
 
+    beforeEach ->
+      presenceHandlerSpy.reset()
+
     it 'should post a message to slack', ->
 
       userId = 'user1'
