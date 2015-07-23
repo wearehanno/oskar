@@ -258,7 +258,7 @@ class Oskar
       statusMsg = OskarTexts.faq
 
     # everything else
-    else statusMsg = OskarTexts[messageType][random-1]
+    else statusMsg = OskarTexts[messageType]
 
     if userId && statusMsg
       @slack.postMessage(userId, statusMsg)

@@ -30,10 +30,12 @@
                         </h2>
                         <p class="entry-summary">
                           <span>Last reported:</span>
+                          <% if (statuses[user.id] && statuses[user.id].date) { %>
                           <abbr class="timeago" title="<%= statuses[user.id].date.toISOString() %>">
                             <%= statuses[user.id].date.getDate() %>.<%= statuses[user.id].date.getMonth() + 1 %>.<%= statuses[user.id].date.getFullYear() %>
                             <%= statuses[user.id].date.getHours() %>:<%= statuses[user.id].date.getMinutes() %>
                           </abbr>
+                          <% } %>
                         </p>
                         <p class="feedback-message">
                           <% if(statuses[user.id] && statuses[user.id].message) {%>

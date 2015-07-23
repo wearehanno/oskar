@@ -68,9 +68,9 @@ See the following instructions if you set up Oskar for the first time.
 - Download and install nodeJS: https://nodejs.org/download/
 - Install Grunt: `npm install grunt -g`
 - Run `npm install` to install dependencies
-- Start the static part of the server without running Oskar: `grunt static`
+- Start the local app using Heroku Foreman, with: `foreman start web`
 - You can reach the site at http://localhost:5000
-- Compile & watch Sass files: `grunt watch`
+- Compile & watch Sass files: `grunt watch`. TODO: Document this better because it actually needs to be done before every contribution.
 
 ## Unit tests
 

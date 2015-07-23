@@ -40,13 +40,13 @@ OskarTexts = {
     message: "\n>\"{0}\""
   },
   newUserFeedback: "*{0}* is feeling *{1}/5*\n>\"{2}\"",
-  alreadySubmitted: ["Oops, looks like you've already told me how you feel in the last couple of hours. Let's check in again later.", "Oh, hey there! I actually have some feedback from you already, in the last 4 hours. Let's leave it a little longer before we catch up :smile:", "Easy, tiger! I know you love our number games, but let\'s wait a bit before we play again! I'll ping you in a few hours to see how you're doing."],
-  invalidInput: ["Oh! I'm not sure what you meant, there: I only understand numbers between 1 and 5. Do you mind phrasing that a little differently?", "Oh! I'm not sure what you meant, there: I only understand numbers between 1 and 5. Do you mind phrasing that a little differently?", "I\'d really love to understand what you\'re saying, but until I become a little more educated, I'll need you to stick to using numbers between 1 and 5 to tell me how you feel."],
-  lowFeedback: ["That sucks. I was really hoping you'd be feeling a little better than that. *Is there anything I should know?*", "Oh dear :worried: I'm having a rough day over here too... :tired_face: *Wanna tell me a little more?* Perhaps one of our teammates will be able to help out.", "Ah, man :disappointed: I really hate to hear when a friend is having a rough time. *Wanna explain a little more?* "],
-  averageFeedback: ["Alright! Go get em :tiger: If you've got something you want to share, feel free. If not, have a grrreat day!", "Good luck with powering through things. if you've got something you want to share, feel free.", "That's alright. We can't all be having crazy highs and killer lows. Sometimes a little bit of normality is If you feel like telling me more, feel free!"],
-  highFeedback: [":trophy: Winning! It's so great to hear that. Wanna tell me why things are going so well?", ":thumbsup: looks like you're on :fire: today. Is there anything you'd like to share with the team?", "There's nothing I like more than great feedback! :clap::skin-tone-4: What's made you feel so awesome today?"],
-  feedbackReceived: ["Thanks a lot, buddy! Keep up the good work!", "You\'re a champion. Thanks for the input and have a great day!", "That\'s really helpful. I wish you good luck with everything today!"],
-  feedbackMessageReceived: ["Thanks for sharing with me, my friend. Let's catch up again soon.", "Thanks for being so open! Let's catch up in a few hours.", "Gotcha. I've pinged that message to the rest of the team."]
+  alreadySubmitted: "Oops, looks like you've already told me how you feel in the last couple of hours. Let's check in again later.",
+  invalidInput: "Oh! I'm not sure what you meant, there: I only understand numbers between 1 and 5. Do you mind phrasing that a little differently?",
+  lowFeedback: "That sucks. I was really hoping you'd be feeling a little better than that. *Is there anything I should know?*",
+  averageFeedback: "Alright! Go get em :tiger: If you've got something you want to share, feel free. If not, have a grrreat day!",
+  highFeedback: ":trophy: Winning! It's so great to hear that. Wanna tell me why things are going so well?",
+  feedbackReceived: "Thanks a lot, buddy! Keep up the good work!",
+  feedbackMessageReceived: "Thanks for sharing with me, my friend. Let's catch up again soon."
 };
 
 module.exports = OskarTexts;
