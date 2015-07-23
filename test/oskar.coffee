@@ -68,9 +68,6 @@ describe 'oskar', ->
 
   describe 'HelperMethods', ->
 
-    beforeEach ->
-      presenceHandlerSpy.reset()
-
     it 'should post a message to slack', ->
 
       userId = 'user1'
@@ -81,17 +78,13 @@ describe 'oskar', ->
       postMessageStub.called.should.be.equal true
       postMessageStub.args[0][0].should.be.equal userId
 
-    it 'should send presence events when checkForUserStatus is called', (done) ->
+    it 'should send presence events when checkForUserStatus is called', ->
 
       targetUserIds = [2, 3]
       getUserIdsStub.returns(targetUserIds)
 
       oskar.checkForUserStatus(slack)
-
-      setTimeout ->
-        presenceHandlerSpy.callCount.should.be.equal 2
-        done()
-      , 100
+      presenceHandlerSpy.callCount.should.be.equal 2
 
   ###################################################################
   # Presence handler
