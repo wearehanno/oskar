@@ -233,7 +233,9 @@ Oskar = (function() {
     userIds = this.slack.getUserIds();
     return userIds.forEach((function(_this) {
       return function(user) {
-        return _this.composeMessage(user, 'newUserFeedback', userStatus);
+        if (user !== userId) {
+          return _this.composeMessage(user, 'newUserFeedback', userStatus);
+        }
       };
     })(this));
   };

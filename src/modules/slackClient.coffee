@@ -26,6 +26,7 @@ class SlackClient extends EventEmitter
 		if mongo? then @mongo = mongo
 
 	connect: () ->
+		console.log 'connecting...'
 		@slack = new Slack(@token, @autoReconnect, @autoMark)
 
 		# listen to Slack API events

@@ -315,7 +315,6 @@ describe 'oskar', ->
         composeMessageStub.args[0][1].should.be.equal 'revealUserStatus'
         composeMessageStub.args[0][2].status.should.be.equal res.status
         composeMessageStub.args[0][2].message.should.be.equal res.message
-        composeMessageStub.args[0][2].user.should.be.equal targetUserObj
         done()
       , 100
 
@@ -486,15 +485,16 @@ describe 'oskar', ->
         done()
       , 100
 
-    it 'should send a message to the whole team with user status', ->
+    it 'should send a message to the whole team excluding user that submitted feedback', ->
 
-      team = ['teammate1', 'teammate2', 'teammate3']
+      team = ['teammate1', 'teammate2', 'teammate3', 'user1']
 
       getUserIdsStub.returns team
 
       oskar.broadcastUserStatus('user1', 5, 'feeling awesome')
 
       # make sure message is going to all users
+      composeMessageStub.args.length.should.be.equal 3
       composeMessageStub.args[0][0].should.be.equal team[0]
       composeMessageStub.args[1][0].should.be.equal team[1]
       composeMessageStub.args[2][0].should.be.equal team[2]

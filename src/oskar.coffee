@@ -214,7 +214,8 @@ class Oskar
     userIds = @slack.getUserIds()
 
     userIds.forEach (user) =>
-      @composeMessage user, 'newUserFeedback', userStatus
+      if (user isnt userId)
+        @composeMessage user, 'newUserFeedback', userStatus
 
   composeMessage: (userId, messageType, obj) ->
 

@@ -110,6 +110,7 @@ Client = (function(_super) {
   };
 
   Client.prototype.connect = function() {
+    console.log('connecting to websocket');
     if (!this.socketUrl) {
       return false;
     } else {
@@ -182,7 +183,7 @@ Client = (function(_super) {
       this._pongTimeout = null;
     }
     this.authenticated = false;
-    this.ws.close();
+    if (this.ws) { this.ws.close(); };
     this._connAttempts++;
     timeout = this._connAttempts * 1000;
     this.logger.info("Reconnecting in %dms", timeout);

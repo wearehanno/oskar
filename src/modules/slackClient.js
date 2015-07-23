@@ -50,6 +50,7 @@ SlackClient = (function(_super) {
 
   SlackClient.prototype.connect = function() {
     var promise;
+    console.log('connecting...');
     this.slack = new Slack(this.token, this.autoReconnect, this.autoMark);
     this.slack.on('presenceChange', this.presenceChangeHandler);
     this.slack.on('message', this.messageHandler);
