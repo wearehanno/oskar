@@ -89,6 +89,7 @@ describe 'oskar', ->
       oskar.checkForUserStatus(slack)
 
       setTimeout ->
+        console.log presenceHandlerSpy.args
         presenceHandlerSpy.callCount.should.be.equal 2
         done()
       , 100
