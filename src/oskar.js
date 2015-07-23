@@ -242,11 +242,11 @@ Oskar = (function() {
 
   Oskar.prototype.composeMessage = function(userId, messageType, obj) {
     var random, statusMsg, userObj;
-    random = Math.floor(Math.random() * (4 - 1)) + 1;
     if (messageType === 'requestFeedback') {
       userObj = this.slack.getUser(userId);
       if (obj < 1) {
-        statusMsg = OskarTexts.requestFeedback.random[random - 1].format(userObj.profile.first_name);
+        random = Math.floor(Math.random() * OskarTexts.requestFeedback.random.length);
+        statusMsg = OskarTexts.requestFeedback.random[random].format(userObj.profile.first_name);
         statusMsg += OskarTexts.requestFeedback.selection;
       } else {
         statusMsg = OskarTexts.requestFeedback.options[obj - 1];

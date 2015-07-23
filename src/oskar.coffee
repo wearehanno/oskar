@@ -219,14 +219,12 @@ class Oskar
 
   composeMessage: (userId, messageType, obj) ->
 
-    # random number to pick varying messages from content file
-    random =  Math.floor(Math.random() * (4 - 1)) + 1
-
     # request feedback
     if messageType is 'requestFeedback'
       userObj = @slack.getUser userId
       if obj < 1
-        statusMsg = OskarTexts.requestFeedback.random[random-1].format userObj.profile.first_name
+        random = Math.floor(Math.random() * OskarTexts.requestFeedback.random.length)
+        statusMsg = OskarTexts.requestFeedback.random[random].format userObj.profile.first_name
         statusMsg += OskarTexts.requestFeedback.selection
       else
         statusMsg = OskarTexts.requestFeedback.options[obj-1]
