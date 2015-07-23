@@ -190,6 +190,10 @@ SlackClient = (function(_super) {
     })(this));
   };
 
+  SlackClient.prototype.postMessageToChannel = function(channelId, message) {
+    return this.slack.postMessage(channelId, message, function() {});
+  };
+
   return SlackClient;
 
 })(EventEmitter);

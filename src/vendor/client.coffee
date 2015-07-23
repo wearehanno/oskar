@@ -154,7 +154,8 @@ class Client extends EventEmitter
       @_pongTimeout = null
 
     @authenticated = false
-    @ws.close()
+    if this.ws
+      @ws.close()
 
     @_connAttempts++
     # TODO: Check max reconnecting attempts and/or set a ceiling on this timeout

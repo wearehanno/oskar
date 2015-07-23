@@ -223,18 +223,21 @@ Oskar = (function() {
   };
 
   Oskar.prototype.broadcastUserStatus = function(userId, status, feedback) {
-    var user, userIds, userStatus;
+    var channelId, user, userIds, userStatus;
     user = this.slack.getUser(userId);
     userStatus = {
       first_name: user.profile.first_name,
       status: status,
       feedback: feedback
     };
+    if ((channelId = process.env.CHANNEL_ID)) {
+      return this.composeMessage(user, 'newUserFeedbackToChannel', userStatus);
+    }
     userIds = this.slack.getUserIds();
     return userIds.forEach((function(_this) {
       return function(user) {
         if (user !== userId) {
-          return _this.composeMessage(user, 'newUserFeedback', userStatus);
+          return _this.composeMessage(user, 'newUserFeedbackToUser', userStatus);
         }
       };
     })(this));
@@ -272,8 +275,12 @@ Oskar = (function() {
           statusMsg += OskarTexts.revealUserStatus.message.format(obj.message);
         }
       }
-    } else if (messageType === 'newUserFeedback') {
+    } else if (messageType === 'newUserFeedbackToChannel') {
       statusMsg = OskarTexts.newUserFeedback.format(obj.first_name, obj.status, obj.feedback);
+      return this.slack.postMessageToChannel(process.env.CHANNEL_ID, statusMsg);
+    } else if (messageType === 'newUserFeedbackToUser') {
+      statusMsg = OskarTexts.newUserFeedback.format(obj.first_name, obj.status, obj.feedback);
+      return this.slack.postMessage(userId, statusMsg);
     } else if (messageType === 'faq') {
       statusMsg = OskarTexts.faq;
     } else {

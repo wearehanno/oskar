@@ -26,6 +26,7 @@ describe 'oskar', ->
   isUserCommentAllowedStub = sinon.stub slack, 'isUserCommentAllowed'
   disallowUserCommentStub  = sinon.stub slack, 'disallowUserComment'
   postMessageStub          = sinon.stub slack, 'postMessage'
+  postMessageToChannelSpy  = sinon.spy  slack, 'postMessageToChannel'
 
   # mongo stubs
   userExistsStub              = sinon.stub mongo, 'userExists'
@@ -66,6 +67,9 @@ describe 'oskar', ->
   ###################################################################
 
   describe 'HelperMethods', ->
+
+    beforeEach ->
+      presenceHandlerSpy.reset()
 
     it 'should post a message to slack', ->
 
@@ -477,7 +481,6 @@ describe 'oskar', ->
       oskar.handleFeedbackMessage message
 
       setTimeout ->
-        console.log broadcastUserStatusSpy.args
         broadcastUserStatusSpy.args[0][0].should.be.equal message.user
         broadcastUserStatusSpy.args[0][1].should.be.type 'number'
         broadcastUserStatusSpy.args[0][2].should.be.equal message.text
@@ -494,12 +497,11 @@ describe 'oskar', ->
       oskar.broadcastUserStatus('user1', 5, 'feeling awesome')
 
       # make sure message is going to all users
-      composeMessageStub.args.length.should.be.equal 3
       composeMessageStub.args[0][0].should.be.equal team[0]
       composeMessageStub.args[1][0].should.be.equal team[1]
       composeMessageStub.args[2][0].should.be.equal team[2]
 
-      composeMessageStub.args[0][1].should.be.equal 'newUserFeedback'
+      composeMessageStub.args[0][1].should.be.equal 'newUserFeedbackToUser'
       composeMessageStub.args[0][2].should.have.property 'first_name'
       composeMessageStub.args[0][2].should.have.property 'status'
       composeMessageStub.args[0][2].should.have.property 'feedback'
@@ -582,6 +584,19 @@ describe 'oskar', ->
       oskar.composeMessage 'user1', 'requestFeedback', 0
       postMessageStub.args[0][0].should.be.equal 'user1'
       postMessageStub.args[0][1].should.be.type 'string'
+
+    it 'should send the feedback messages to a channel if a channel has been defined', ->
+
+      userStatus =
+        first_name : 'Marcel'
+        status     : '4'
+        feedback   : 'all good'
+
+      process.env.CHANNEL_ID = 'channelOne'
+      oskar.composeMessage 'user1', 'newUserFeedbackToChannel', userStatus
+
+      postMessageToChannelSpy.args[0][0].should.be.equal process.env.CHANNEL_ID
+      postMessageToChannelSpy.args[0][1].should.be.type 'string'
 
     ###################################################################
     # The following can be used to verify the responses (just remove the comment from the log function)

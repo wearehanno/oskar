@@ -211,11 +211,13 @@ class Oskar
       feedback   : feedback
 
     # send update to all users
-    userIds = @slack.getUserIds()
+    if (channelId = process.env.CHANNEL_ID)
+      return @composeMessage user,  'newUserFeedbackToChannel', userStatus
 
+    userIds = @slack.getUserIds()
     userIds.forEach (user) =>
       if (user isnt userId)
-        @composeMessage user, 'newUserFeedback', userStatus
+        @composeMessage user, 'newUserFeedbackToUser', userStatus
 
   composeMessage: (userId, messageType, obj) ->
 
@@ -248,8 +250,13 @@ class Oskar
         if obj.message
           statusMsg += OskarTexts.revealUserStatus.message.format obj.message
 
-    else if messageType is 'newUserFeedback'
+    else if messageType is 'newUserFeedbackToChannel'
       statusMsg = OskarTexts.newUserFeedback.format obj.first_name, obj.status, obj.feedback
+      return @slack.postMessageToChannel process.env.CHANNEL_ID, statusMsg
+
+    else if messageType is 'newUserFeedbackToUser'
+      statusMsg = OskarTexts.newUserFeedback.format obj.first_name, obj.status, obj.feedback
+      return @slack.postMessage userId, statusMsg
 
     # faq
     else if messageType is 'faq'

@@ -110,7 +110,6 @@ Client = (function(_super) {
   };
 
   Client.prototype.connect = function() {
-    console.log('connecting to websocket');
     if (!this.socketUrl) {
       return false;
     } else {

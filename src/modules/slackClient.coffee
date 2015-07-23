@@ -126,4 +126,8 @@ class SlackClient extends EventEmitter
 			@channels[userId] = res
 			@slack.postMessage res.channel.id, message, () ->
 
+	postMessageToChannel: (channelId, message) ->
+		@slack.postMessage channelId, message, () ->
+
+
 module.exports = SlackClient
