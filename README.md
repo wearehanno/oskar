@@ -53,8 +53,8 @@ Here's the config variables you need to define:
 - `slack.token` (or `SLACK_TOKEN` for Heroku) is the token of your team's Slackbot (you can create a new Slackbot here: https://yourteam.slack.com/services/new/bot)
 
 Additionally you can disable specific channels or users:
-- `slack.disabledUsers` (or `DISABLED_USERS` for Heroku) to disable **channels** that Oskar is part of (you should disable the default channel that Slack added)
-- `slack.disabledChannels` (or `DISABLED_CHANNELS` for Heroku) to disable **users** if you want specific people on your team to not receive any Oskar messages at all
+- `slack.disabledUsers` (or `DISABLED_USERS` for Heroku) to disable **channels** that Oskar is part of (you should disable the default channel that Slack added. Go here to find out your channel IDs: https://api.slack.com/methods/channels.list/test)
+- `slack.disabledChannels` (or `DISABLED_CHANNELS` for Heroku) to disable **users** if you want specific people on your team to not receive any Oskar messages at all (go here to find out your user IDs: https://api.slack.com/methods/users.list/test)
 
 By default your dashboard is protected via a simple HTTP auth mechanism. (we'll try to improve this in the future)
 - `auth.username` and `auth.password` (or `AUTH_USERNAME` and `AUTH_PASSWORD` for Heroku) define your login data for the dashboard. Make sure to share those with your team.
