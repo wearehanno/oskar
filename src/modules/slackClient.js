@@ -191,8 +191,10 @@ SlackClient = (function(_super) {
   };
 
   SlackClient.prototype.postMessageToChannel = function(channelId, message, cb) {
-    var res;
-    return res = this.slack.postMessage(channelId, message, function() {
+    console.log(channelId);
+    console.log(message);
+    return this.slack.postMessage(channelId, message, function() {
+      console.log.apply(console, arguments);
       if (cb) {
         return cb.apply(null, arguments);
       }
