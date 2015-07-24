@@ -18,6 +18,7 @@ class SlackClient extends EventEmitter
 		@autoMark         = true
 		@users            = []
 		@channels         = []
+		@channelId 				= process.env.CHANNEL_ID || config.get('slack.channelId')
 
 		# parse env vars that have to be arrays
 		@disabledUsers    = if process.env.DISABLED_USERS then JSON.parse "[" + process.env.DISABLED_USERS + "]" else config.get 'slack.disabledUsers'
@@ -107,7 +108,7 @@ class SlackClient extends EventEmitter
 			return false
 
 		# ignore channel that oskar is broadcasting to (otherwise he'd react to every single message in there)
-		if (process.env.CHANNEL_ID && process.env.CHANNEL_ID is message.channel)
+		if (@channelId && @channelId is message.channel)
 			return false
 
 		# disable messages from disabled channels
@@ -117,6 +118,7 @@ class SlackClient extends EventEmitter
 		# send message event
 		message.type = 'input'
 		@emit 'message', message
+		return true
 
 	# post message to slack
 	postMessage: (userId, message) ->

@@ -41,6 +41,7 @@ SlackClient = (function(_super) {
     this.autoMark = true;
     this.users = [];
     this.channels = [];
+    this.channelId = process.env.CHANNEL_ID || config.get('slack.channelId');
     this.disabledUsers = process.env.DISABLED_USERS ? JSON.parse("[" + process.env.DISABLED_USERS + "]") : config.get('slack.disabledUsers');
     this.disabledChannels = process.env.DISABLED_CHANNELS ? JSON.parse("[" + process.env.DISABLED_CHANNELS + "]") : config.get('slack.disabledChannels');
     if (mongo != null) {
@@ -171,14 +172,15 @@ SlackClient = (function(_super) {
     if ((message == null) || (this.getUser(message.user)) === void 0) {
       return false;
     }
-    if (process.env.CHANNEL_ID && process.env.CHANNEL_ID === message.channel) {
+    if (this.channelId && this.channelId === message.channel) {
       return false;
     }
     if (this.disabledChannels.indexOf(message.channel) !== -1) {
       return false;
     }
     message.type = 'input';
-    return this.emit('message', message);
+    this.emit('message', message);
+    return true;
   };
 
   SlackClient.prototype.postMessage = function(userId, message) {

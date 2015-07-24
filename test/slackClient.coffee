@@ -15,6 +15,7 @@ connect     = null
 describe 'SlackClient', ->
 
   before ->
+    process.env.CHANNEL_ID = 'broadcastChannel'
     slackClient = new SlackClient(null, 'xoxb-7369872208-yv3ZYe8kqwBDn8ugClt8wchL')
     connect     = slackClient.connect()
 
@@ -144,16 +145,6 @@ describe 'SlackClient', ->
         response = slackClient.messageHandler(message)
         response.should.be.equal(false)
 
-      it 'should return false when message handler is called for a disabled channel', ->
-
-        if disabledChannels.length
-          message =
-            user: 'user1'
-            channel: disabledChannels[0]
-
-          response = slackClient.messageHandler(message)
-          response.should.be.equal(false)
-
       it 'should return false when message handler if user is slackbot', ->
 
         message =
@@ -166,7 +157,7 @@ describe 'SlackClient', ->
 
         if disabledChannels.length
           message =
-            user: 'user1'
+            user: userIds[0]
             channel: disabledChannels[0]
 
         response = slackClient.messageHandler(message)
@@ -174,10 +165,8 @@ describe 'SlackClient', ->
 
       it 'should return false when message handler is called with a message from broadcast channel', ->
 
-        process.env.CHANNEL_ID = 'broadcastChannel'
-
         message =
-          user: 'user1'
+          user: userIds[0]
           channel: 'broadcastChannel'
 
         response = slackClient.messageHandler(message)
