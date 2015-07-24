@@ -172,6 +172,17 @@ describe 'SlackClient', ->
         response = slackClient.messageHandler(message)
         response.should.be.equal(false)
 
+      it 'should return false when message handler is called with a message from broadcast channel', ->
+
+        process.env.CHANNEL_ID = 'broadcastChannel'
+
+        message =
+          user: 'user1'
+          channel: 'broadcastChannel'
+
+        response = slackClient.messageHandler(message)
+        response.should.be.equal(false)
+
       it 'should trigger a message event when message handler is called with a user and valid text is passed', ->
 
         message =

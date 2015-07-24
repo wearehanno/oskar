@@ -106,6 +106,10 @@ class SlackClient extends EventEmitter
 		if !message? || (@getUser message.user) is undefined
 			return false
 
+		# ignore channel that oskar is broadcasting to (otherwise he'd react to every single message in there)
+		if (process.env.CHANNEL_ID && process.env.CHANNEL_ID is message.channel)
+			return false
+
 		# disable messages from disabled channels
 		if @disabledChannels.indexOf(message.channel) isnt -1
 			return false
