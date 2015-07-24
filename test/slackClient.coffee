@@ -102,6 +102,11 @@ describe 'SlackClient', ->
         number = slackClient.getfeedbackRequestsCount(userId)
         number.should.be.equal(1)
 
+      it 'should post a message to a channel', (done) ->
+        slackClient.postMessageToChannel 'C07AWEMBP', 'test', (args) ->
+          should(args.ok).be.equal true
+          done()
+
     describe 'EventHandlers', ->
 
       it 'should send a presence event when user changes presence', ->
