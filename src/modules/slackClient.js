@@ -171,6 +171,9 @@ SlackClient = (function(_super) {
     if ((message == null) || (this.getUser(message.user)) === void 0) {
       return false;
     }
+    if (process.env.CHANNEL_ID && process.env.CHANNEL_ID === message.channel) {
+      return false;
+    }
     if (this.disabledChannels.indexOf(message.channel) !== -1) {
       return false;
     }
@@ -191,10 +194,7 @@ SlackClient = (function(_super) {
   };
 
   SlackClient.prototype.postMessageToChannel = function(channelId, message, cb) {
-    console.log(channelId);
-    console.log(message);
     return this.slack.postMessage(channelId, message, function() {
-      console.log.apply(console, arguments);
       if (cb) {
         return cb.apply(null, arguments);
       }

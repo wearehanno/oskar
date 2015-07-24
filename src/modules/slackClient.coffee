@@ -132,11 +132,7 @@ class SlackClient extends EventEmitter
 
 	postMessageToChannel: (channelId, message, cb) ->
 
-		console.log channelId
-		console.log message
-
 		@slack.postMessage channelId, message, () ->
-			console.log arguments...
 			if (cb)
 				cb arguments...
 
