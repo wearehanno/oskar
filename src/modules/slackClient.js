@@ -41,6 +41,7 @@ SlackClient = (function(_super) {
     this.autoMark = true;
     this.users = [];
     this.channels = [];
+    this.channelId = process.env.CHANNEL_ID || config.get('slack.channelId');
     this.disabledUsers = process.env.DISABLED_USERS ? JSON.parse("[" + process.env.DISABLED_USERS + "]") : config.get('slack.disabledUsers');
     this.disabledChannels = process.env.DISABLED_CHANNELS ? JSON.parse("[" + process.env.DISABLED_CHANNELS + "]") : config.get('slack.disabledChannels');
     if (mongo != null) {
@@ -50,6 +51,7 @@ SlackClient = (function(_super) {
 
   SlackClient.prototype.connect = function() {
     var promise;
+    console.log('connecting...');
     this.slack = new Slack(this.token, this.autoReconnect, this.autoMark);
     this.slack.on('presenceChange', this.presenceChangeHandler);
     this.slack.on('message', this.messageHandler);
@@ -170,11 +172,15 @@ SlackClient = (function(_super) {
     if ((message == null) || (this.getUser(message.user)) === void 0) {
       return false;
     }
+    if (this.channelId && this.channelId === message.channel) {
+      return false;
+    }
     if (this.disabledChannels.indexOf(message.channel) !== -1) {
       return false;
     }
     message.type = 'input';
-    return this.emit('message', message);
+    this.emit('message', message);
+    return true;
   };
 
   SlackClient.prototype.postMessage = function(userId, message) {
@@ -187,6 +193,14 @@ SlackClient = (function(_super) {
         return _this.slack.postMessage(res.channel.id, message, function() {});
       };
     })(this));
+  };
+
+  SlackClient.prototype.postMessageToChannel = function(channelId, message, cb) {
+    return this.slack.postMessage(channelId, message, function() {
+      if (cb) {
+        return cb.apply(null, arguments);
+      }
+    });
   };
 
   return SlackClient;

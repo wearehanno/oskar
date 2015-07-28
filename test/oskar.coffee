@@ -26,6 +26,7 @@ describe 'oskar', ->
   isUserCommentAllowedStub = sinon.stub slack, 'isUserCommentAllowed'
   disallowUserCommentStub  = sinon.stub slack, 'disallowUserComment'
   postMessageStub          = sinon.stub slack, 'postMessage'
+  postMessageToChannelSpy  = sinon.spy  slack, 'postMessageToChannel'
 
   # mongo stubs
   userExistsStub              = sinon.stub mongo, 'userExists'
@@ -67,6 +68,9 @@ describe 'oskar', ->
 
   describe 'HelperMethods', ->
 
+    beforeEach ->
+      presenceHandlerSpy.reset()
+
     it 'should post a message to slack', ->
 
       userId = 'user1'
@@ -77,17 +81,13 @@ describe 'oskar', ->
       postMessageStub.called.should.be.equal true
       postMessageStub.args[0][0].should.be.equal userId
 
-    it 'should send presence events when checkForUserStatus is called', (done) ->
+    it 'should send presence events when checkForUserStatus is called', ->
 
       targetUserIds = [2, 3]
       getUserIdsStub.returns(targetUserIds)
 
       oskar.checkForUserStatus(slack)
-
-      setTimeout ->
-        presenceHandlerSpy.callCount.should.be.equal 2
-        done()
-      , 100
+      presenceHandlerSpy.callCount.should.be.equal 2
 
   ###################################################################
   # Presence handler
@@ -315,7 +315,6 @@ describe 'oskar', ->
         composeMessageStub.args[0][1].should.be.equal 'revealUserStatus'
         composeMessageStub.args[0][2].status.should.be.equal res.status
         composeMessageStub.args[0][2].message.should.be.equal res.message
-        composeMessageStub.args[0][2].user.should.be.equal targetUserObj
         done()
       , 100
 
@@ -478,7 +477,6 @@ describe 'oskar', ->
       oskar.handleFeedbackMessage message
 
       setTimeout ->
-        console.log broadcastUserStatusSpy.args
         broadcastUserStatusSpy.args[0][0].should.be.equal message.user
         broadcastUserStatusSpy.args[0][1].should.be.type 'number'
         broadcastUserStatusSpy.args[0][2].should.be.equal message.text
@@ -486,9 +484,9 @@ describe 'oskar', ->
         done()
       , 100
 
-    it 'should send a message to the whole team with user status', ->
+    it 'should send a message to the whole team excluding user that submitted feedback', ->
 
-      team = ['teammate1', 'teammate2', 'teammate3']
+      team = ['teammate1', 'teammate2', 'teammate3', 'user1']
 
       getUserIdsStub.returns team
 
@@ -499,7 +497,7 @@ describe 'oskar', ->
       composeMessageStub.args[1][0].should.be.equal team[1]
       composeMessageStub.args[2][0].should.be.equal team[2]
 
-      composeMessageStub.args[0][1].should.be.equal 'newUserFeedback'
+      composeMessageStub.args[0][1].should.be.equal 'newUserFeedbackToUser'
       composeMessageStub.args[0][2].should.have.property 'first_name'
       composeMessageStub.args[0][2].should.have.property 'status'
       composeMessageStub.args[0][2].should.have.property 'feedback'
@@ -582,6 +580,19 @@ describe 'oskar', ->
       oskar.composeMessage 'user1', 'requestFeedback', 0
       postMessageStub.args[0][0].should.be.equal 'user1'
       postMessageStub.args[0][1].should.be.type 'string'
+
+    it 'should send the feedback messages to a channel if a channel has been defined', ->
+
+      userStatus =
+        first_name : 'Marcel'
+        status     : '4'
+        feedback   : 'all good'
+
+      process.env.CHANNEL_ID = 'channelOne'
+      oskar.composeMessage 'user1', 'newUserFeedbackToChannel', userStatus
+
+      postMessageToChannelSpy.args[0][0].should.be.equal process.env.CHANNEL_ID
+      postMessageToChannelSpy.args[0][1].should.be.type 'string'
 
     ###################################################################
     # The following can be used to verify the responses (just remove the comment from the log function)

@@ -52,9 +52,12 @@ Here's the config variables you need to define:
 - `mongo.url` (or `MONGOLAB_URI` for Heroku) defines the url to your MongoDB database (to create a mongoDB on Heroku, go to https://elements.heroku.com/addons/mongolab). This will be automatically generated if you create a MongoLab database as described below ("Setting up Oskar on Heroku") in step 4.
 - `slack.token` (or `SLACK_TOKEN` for Heroku) is the token of your team's Slackbot (you can create a new Slackbot here: https://yourteam.slack.com/services/new/bot)
 
+If you want to broadcast all user feedback to a channel instead of to each user individually:
+- `slack.channelId` (or `CHANNEL_ID` for Heroku) defines the channel where Oskar will broadcast all user messages. Add this parameter if you don't want Oskar to send the status feedback to each user's direct message channel. On Heroku, don't add quotes around the parameter like for the disabledUsers or disabledChannels parameters, just the channel ID: CXXXXXX
+
 Additionally you can disable specific channels or users:
-- `slack.disabledUsers` (or `DISABLED_USERS` for Heroku) to disable **channels** that Oskar is part of (you should disable the default channel that Slack added)
-- `slack.disabledChannels` (or `DISABLED_CHANNELS` for Heroku) to disable **users** if you want specific people on your team to not receive any Oskar messages at all
+- `slack.disabledUsers` (or `DISABLED_USERS` for Heroku) to disable **channels** that Oskar is part of (you should disable the default channel that Slack added. Go here to find out your channel IDs: https://api.slack.com/methods/channels.list/test). When using Heroku, make sure to put the list IDs into quotes like this: "CXXXXXX", "CYYYYYY"
+- `slack.disabledChannels` (or `DISABLED_CHANNELS` for Heroku) to disable **users** if you want specific people on your team to not receive any Oskar messages at all (go here to find out your user IDs: https://api.slack.com/methods/users.list/test). When using Heroku, make sure to put the user IDs into quotes like this: "UXXXXXX", "UYYYYYY"
 
 By default your dashboard is protected via a simple HTTP auth mechanism. (we'll try to improve this in the future)
 - `auth.username` and `auth.password` (or `AUTH_USERNAME` and `AUTH_PASSWORD` for Heroku) define your login data for the dashboard. Make sure to share those with your team.

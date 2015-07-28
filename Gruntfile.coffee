@@ -17,9 +17,6 @@ module.exports = (grunt) ->
       libsass:
         files: '**/*.scss'
         tasks: ['sass']
-    env:
-      dev:
-        NODE_ENV: 'development'
 
     shell:
       test:
@@ -71,4 +68,3 @@ module.exports = (grunt) ->
         ext: '.js'
 
   grunt.registerTask 'prepublish', ['coffee']
-  grunt.registerTask 'static', ['env', 'shell:run']

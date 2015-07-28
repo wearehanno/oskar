@@ -1,5 +1,9 @@
-var InputHelper, MongoClient, OnboardingHelper, Oskar, OskarTexts, SlackClient, TimeHelper, express, routes,
+var InputHelper, MongoClient, OnboardingHelper, Oskar, OskarTexts, SlackClient, TimeHelper, express, routes, typeIsArray,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+typeIsArray = Array.isArray || function(value) {
+  return {}.toString.call(value) === '[object Array]';
+};
 
 express = require('express');
 
@@ -223,28 +227,33 @@ Oskar = (function() {
   };
 
   Oskar.prototype.broadcastUserStatus = function(userId, status, feedback) {
-    var user, userIds, userStatus;
+    var channelId, user, userIds, userStatus;
     user = this.slack.getUser(userId);
     userStatus = {
       first_name: user.profile.first_name,
       status: status,
       feedback: feedback
     };
+    if ((channelId = process.env.CHANNEL_ID)) {
+      return this.composeMessage(user, 'newUserFeedbackToChannel', userStatus);
+    }
     userIds = this.slack.getUserIds();
     return userIds.forEach((function(_this) {
       return function(user) {
-        return _this.composeMessage(user, 'newUserFeedback', userStatus);
+        if (user !== userId) {
+          return _this.composeMessage(user, 'newUserFeedbackToUser', userStatus);
+        }
       };
     })(this));
   };
 
   Oskar.prototype.composeMessage = function(userId, messageType, obj) {
     var random, statusMsg, userObj;
-    random = Math.floor(Math.random() * (4 - 1)) + 1;
     if (messageType === 'requestFeedback') {
       userObj = this.slack.getUser(userId);
       if (obj < 1) {
-        statusMsg = OskarTexts.requestFeedback.random[random - 1].format(userObj.profile.first_name);
+        random = Math.floor(Math.random() * OskarTexts.requestFeedback.random.length);
+        statusMsg = OskarTexts.requestFeedback.random[random].format(userObj.profile.first_name);
         statusMsg += OskarTexts.requestFeedback.selection;
       } else {
         statusMsg = OskarTexts.requestFeedback.options[obj - 1];
@@ -270,12 +279,21 @@ Oskar = (function() {
           statusMsg += OskarTexts.revealUserStatus.message.format(obj.message);
         }
       }
-    } else if (messageType === 'newUserFeedback') {
+    } else if (messageType === 'newUserFeedbackToChannel') {
       statusMsg = OskarTexts.newUserFeedback.format(obj.first_name, obj.status, obj.feedback);
+      return this.slack.postMessageToChannel(process.env.CHANNEL_ID, statusMsg);
+    } else if (messageType === 'newUserFeedbackToUser') {
+      statusMsg = OskarTexts.newUserFeedback.format(obj.first_name, obj.status, obj.feedback);
+      return this.slack.postMessage(userId, statusMsg);
     } else if (messageType === 'faq') {
       statusMsg = OskarTexts.faq;
     } else {
-      statusMsg = OskarTexts[messageType];
+      if (typeIsArray(OskarTexts[messageType])) {
+        random = Math.floor(Math.random() * OskarTexts[messageType].length);
+        statusMsg = OskarTexts[messageType][random];
+      } else {
+        statusMsg = OskarTexts[messageType];
+      }
     }
     if (userId && statusMsg) {
       return this.slack.postMessage(userId, statusMsg);

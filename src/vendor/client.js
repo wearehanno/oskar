@@ -182,7 +182,7 @@ Client = (function(_super) {
       this._pongTimeout = null;
     }
     this.authenticated = false;
-    this.ws.close();
+    if (this.ws) { this.ws.close(); };
     this._connAttempts++;
     timeout = this._connAttempts * 1000;
     this.logger.info("Reconnecting in %dms", timeout);

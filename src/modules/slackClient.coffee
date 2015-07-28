@@ -18,6 +18,7 @@ class SlackClient extends EventEmitter
 		@autoMark         = true
 		@users            = []
 		@channels         = []
+		@channelId 				= process.env.CHANNEL_ID || config.get('slack.channelId')
 
 		# parse env vars that have to be arrays
 		@disabledUsers    = if process.env.DISABLED_USERS then JSON.parse "[" + process.env.DISABLED_USERS + "]" else config.get 'slack.disabledUsers'
@@ -26,6 +27,7 @@ class SlackClient extends EventEmitter
 		if mongo? then @mongo = mongo
 
 	connect: () ->
+		console.log 'connecting...'
 		@slack = new Slack(@token, @autoReconnect, @autoMark)
 
 		# listen to Slack API events
@@ -105,6 +107,10 @@ class SlackClient extends EventEmitter
 		if !message? || (@getUser message.user) is undefined
 			return false
 
+		# ignore channel that oskar is broadcasting to (otherwise he'd react to every single message in there)
+		if (@channelId && @channelId is message.channel)
+			return false
+
 		# disable messages from disabled channels
 		if @disabledChannels.indexOf(message.channel) isnt -1
 			return false
@@ -112,6 +118,7 @@ class SlackClient extends EventEmitter
 		# send message event
 		message.type = 'input'
 		@emit 'message', message
+		return true
 
 	# post message to slack
 	postMessage: (userId, message) ->
@@ -124,5 +131,11 @@ class SlackClient extends EventEmitter
 		@slack.openDM userId, (res) =>
 			@channels[userId] = res
 			@slack.postMessage res.channel.id, message, () ->
+
+	postMessageToChannel: (channelId, message, cb) ->
+
+		@slack.postMessage channelId, message, () ->
+			if (cb)
+				cb arguments...
 
 module.exports = SlackClient

@@ -1,3 +1,6 @@
+# polyfill for isArray method
+typeIsArray = Array.isArray || ( value ) -> return {}.toString.call( value ) is '[object Array]'
+
 express          = require 'express'
 MongoClient      = require './modules/mongoClient'
 SlackClient      = require './modules/slackClient'
@@ -211,21 +214,22 @@ class Oskar
       feedback   : feedback
 
     # send update to all users
-    userIds = @slack.getUserIds()
+    if (channelId = process.env.CHANNEL_ID)
+      return @composeMessage user,  'newUserFeedbackToChannel', userStatus
 
+    userIds = @slack.getUserIds()
     userIds.forEach (user) =>
-      @composeMessage user, 'newUserFeedback', userStatus
+      if (user isnt userId)
+        @composeMessage user, 'newUserFeedbackToUser', userStatus
 
   composeMessage: (userId, messageType, obj) ->
-
-    # random number to pick varying messages from content file
-    random =  Math.floor(Math.random() * (4 - 1)) + 1
 
     # request feedback
     if messageType is 'requestFeedback'
       userObj = @slack.getUser userId
       if obj < 1
-        statusMsg = OskarTexts.requestFeedback.random[random-1].format userObj.profile.first_name
+        random = Math.floor(Math.random() * OskarTexts.requestFeedback.random.length)
+        statusMsg = OskarTexts.requestFeedback.random[random].format userObj.profile.first_name
         statusMsg += OskarTexts.requestFeedback.selection
       else
         statusMsg = OskarTexts.requestFeedback.options[obj-1]
@@ -249,15 +253,25 @@ class Oskar
         if obj.message
           statusMsg += OskarTexts.revealUserStatus.message.format obj.message
 
-    else if messageType is 'newUserFeedback'
+    else if messageType is 'newUserFeedbackToChannel'
       statusMsg = OskarTexts.newUserFeedback.format obj.first_name, obj.status, obj.feedback
+      return @slack.postMessageToChannel process.env.CHANNEL_ID, statusMsg
+
+    else if messageType is 'newUserFeedbackToUser'
+      statusMsg = OskarTexts.newUserFeedback.format obj.first_name, obj.status, obj.feedback
+      return @slack.postMessage userId, statusMsg
 
     # faq
     else if messageType is 'faq'
       statusMsg = OskarTexts.faq
 
-    # everything else
-    else statusMsg = OskarTexts[messageType]
+    # everything else, if array choose random string
+    else
+      if typeIsArray OskarTexts[messageType]
+        random = Math.floor(Math.random() * OskarTexts[messageType].length)
+        statusMsg = OskarTexts[messageType][random]
+      else
+        statusMsg = OskarTexts[messageType]
 
     if userId && statusMsg
       @slack.postMessage(userId, statusMsg)
