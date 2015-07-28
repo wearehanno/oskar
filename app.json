@@ -13,7 +13,7 @@
       "required": true
     },
     "CHANNEL_ID": {
-      "description": "The channel that all user notifications go into. If not available, Oskar is going to ping each user individually"
+      "description": "The channel that all user notifications go into. If not available, Oskar is going to ping each user individually",
       "required": false
     },
     "DISABLED_USERS": {
