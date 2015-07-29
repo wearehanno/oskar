@@ -12,8 +12,8 @@
       "description": "Your team's Slackbot token (create a new token here: https://yourteam.slack.com/services/new/bot)",
       "required": true
     },
-    'CHANNEL_ID': {
-      "description": "The channel that all user notifications go into. If not available, Oskar is going to ping each user individually"
+    "CHANNEL_ID": {
+      "description": "The channel that all user notifications go into. If not available, Oskar is going to ping each user individually",
       "required": false
     },
     "DISABLED_USERS": {
