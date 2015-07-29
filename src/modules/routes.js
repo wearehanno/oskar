@@ -35,20 +35,25 @@ routes = function(app, mongo, slack) {
     return function(req, res) {
       var userIds, users;
       users = slack.getUsers();
+      if (users.length === 0) {
+        res.render('pages/dashboard');
+      }
       userIds = users.map(function(user) {
         return user.id;
       });
       return mongo.getAllUserFeedback(userIds).then(function(statuses) {
         var filteredStatuses;
         filteredStatuses = [];
-        statuses.forEach(function(status) {
-          filteredStatuses[status.id] = status.feedback;
-          filteredStatuses[status.id].date = new Date(status.feedback.timestamp);
-          return filteredStatuses[status.id].statusString = OskarTexts.statusText[status.feedback.status];
-        });
-        users.sort(function(a, b) {
-          return filteredStatuses[a.id].status > filteredStatuses[b.id].status;
-        });
+        if (statuses.length) {
+          statuses.forEach(function(status) {
+            filteredStatuses[status.id] = status.feedback;
+            filteredStatuses[status.id].date = new Date(status.feedback.timestamp);
+            return filteredStatuses[status.id].statusString = OskarTexts.statusText[status.feedback.status];
+          });
+          users.sort(function(a, b) {
+            return filteredStatuses[a.id].status > filteredStatuses[b.id].status;
+          });
+        }
         return res.render('pages/dashboard', {
           users: users,
           statuses: filteredStatuses

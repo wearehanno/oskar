@@ -15,38 +15,60 @@
         <section class="post-listing">
           <div class="row">
 
+              <!-- No user data yet -->
+              <% if( typeof users === 'undefined' ) { %>
+              <h2>Sorry, no users have reported their status yet</h2>
+              <% } else { %>
+
+              <!-- User list -->
               <% users.forEach(function(user) { %>
                 <article class="post-listing__listing-item">
                   <a href="/status/<%= user.id %>">
                     <div class="row">
+
+                      <!-- User avatar -->
                       <div class="medium-2 columns text-center">
                         <img class="thumbnail post-listing__listing-item__thumbnail" src="<%= user.profile.image_192 %>">
                       </div>
+
                       <div class="medium-10 columns post-listing__listing-item__content">
+
+                        <!-- User -->
                         <h2 class="post-listing__listing-item__entry-title entry-title">
-                          <%= user.profile.first_name %> is feeling <% if(statuses[user.id] && statuses[user.id].status) {%>
-                          <span class="status-<%= statuses[user.id].status %>"><%= statuses[user.id].statusString %></span>
+                          <%= user.profile.first_name %> <% if(statuses[user.id] && statuses[user.id].status) {%>
+                            is feeling  <span class="status-<%= statuses[user.id].status %>"><%= statuses[user.id].statusString %></span>
+                          <% } else { %>
+                            hasn't submitted any status yet
                           <% } %>
                         </h2>
+
+                        <!-- User status detail -->
                         <p class="entry-summary">
-                          <span>Last reported:</span>
                           <% if (statuses[user.id] && statuses[user.id].date) { %>
-                          <abbr class="timeago" title="<%= statuses[user.id].date.toISOString() %>">
-                            <%= statuses[user.id].date.getDate() %>.<%= statuses[user.id].date.getMonth() + 1 %>.<%= statuses[user.id].date.getFullYear() %>
-                            <%= statuses[user.id].date.getHours() %>:<%= statuses[user.id].date.getMinutes() %>
-                          </abbr>
+                            <span>Last reported:</span>
+                            <abbr class="timeago" title="<%= statuses[user.id].date.toISOString() %>">
+                              <%= statuses[user.id].date.getDate() %>.<%= statuses[user.id].date.getMonth() + 1 %>.<%= statuses[user.id].date.getFullYear() %>
+                              <%= statuses[user.id].date.getHours() %>:<%= statuses[user.id].date.getMinutes() %>
+                            </abbr>
+                          <% } else { %>
+                            The next time Oskar asks this user about his/her status, the feedback will show up here
                           <% } %>
                         </p>
+
+                        <!-- User feedback -->
                         <p class="feedback-message">
                           <% if(statuses[user.id] && statuses[user.id].message) {%>
                             <%= statuses[user.id].message %>
                           <% } %>
                         </p>
+
                       </div>
                     </div>
                   </a>
                 </article>
               <% }); %>
+
+            <% } %>
 
           </div>
         </section>
