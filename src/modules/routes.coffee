@@ -23,17 +23,28 @@ routes = (app, mongo, slack) ->
 
   # dashboard
   app.get '/dashboard', auth, (req, res) =>
+
+    # read users
     users = slack.getUsers()
+
+    if users.length is 0
+      res.render('pages/dashboard')
+
     userIds = users.map (user) ->
       return user.id
+
+    # read users status
     mongo.getAllUserFeedback(userIds).then (statuses) =>
+
       filteredStatuses = []
-      statuses.forEach (status) ->
-        filteredStatuses[status.id]              = status.feedback
-        filteredStatuses[status.id].date         = new Date status.feedback.timestamp
-        filteredStatuses[status.id].statusString = OskarTexts.statusText[status.feedback.status]
-      users.sort (a, b) ->
-        filteredStatuses[a.id].status > filteredStatuses[b.id].status
+
+      if statuses.length
+        statuses.forEach (status) ->
+          filteredStatuses[status.id]              = status.feedback
+          filteredStatuses[status.id].date         = new Date status.feedback.timestamp
+          filteredStatuses[status.id].statusString = OskarTexts.statusText[status.feedback.status]
+        users.sort (a, b) ->
+          filteredStatuses[a.id].status > filteredStatuses[b.id].status
 
       res.render('pages/dashboard', { users: users, statuses: filteredStatuses })
 

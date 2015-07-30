@@ -5,6 +5,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-env'
   grunt.loadNpmTasks('grunt-sass');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
   grunt.initConfig
     watch:
@@ -17,6 +18,9 @@ module.exports = (grunt) ->
       libsass:
         files: '**/*.scss'
         tasks: ['sass']
+      copy:
+        files: ['src/views/**/*', 'src/public/**/*']
+        tasks: ['copy']
 
     shell:
       test:
@@ -33,38 +37,25 @@ module.exports = (grunt) ->
       files:
         cwd: 'src/public/sass'
         src: ['**/*.scss']
-        dest: 'src/public/css'
+        dest: 'target/public/css'
         ext: '.css'
         expand: true
+
     coffee:
       options:
         bare: true
-      index:
-        files:
-          'src/oscar.js': 'src/oscar.coffee'
       classes:
         expand: true
         cwd: 'src'
-        src: ['*.coffee']
-        dest: 'src'
-        ext: '.js'
-      modules:
-        expand: true
-        cwd: 'src/modules'
-        src: ['*.coffee']
-        dest: 'src/modules'
-        ext: '.js'
-      helper:
-        expand: true
-        cwd: 'src/helper'
-        src: ['*.coffee']
-        dest: 'src/helper'
-        ext: '.js'
-      content:
-        expand: true
-        cwd: 'src/content'
-        src: ['*.coffee']
-        dest: 'src/content'
+        src: ['**/*.coffee']
+        dest: 'target'
         ext: '.js'
 
-  grunt.registerTask 'prepublish', ['coffee']
+    copy:
+      files:
+        cwd: 'src'
+        src: ['views/**/*', 'public/**/*', '!public/sass/**']
+        dest: 'target'
+        expand: true
+
+  grunt.registerTask 'prepublish', ['coffee', 'sass', 'copy']
