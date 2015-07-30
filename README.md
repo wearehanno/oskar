@@ -56,28 +56,26 @@ If you want to broadcast all user feedback to a channel instead of to each user 
 - `slack.channelId` (or `CHANNEL_ID` for Heroku) defines the channel where Oskar will broadcast all user messages. Add this parameter if you don't want Oskar to send the status feedback to each user's direct message channel. On Heroku, don't add quotes around the parameter like for the disabledUsers or disabledChannels parameters, just the channel ID: CXXXXXX
 
 Additionally you can disable specific channels or users:
-- `slack.disabledUsers` (or `DISABLED_CHANNELS` for Heroku) to disable **channels** that Oskar is part of (you should disable the default channel that Slack added. Go here to find out your channel IDs: https://api.slack.com/methods/channels.list/test). When using Heroku, make sure to put the list IDs into quotes like this: "CXXXXXX", "CYYYYYY"
-- `slack.disabledChannels` (or `DISABLED_USERS` for Heroku) to disable **users** if you want specific people on your team to not receive any Oskar messages at all (go here to find out your user IDs: https://api.slack.com/methods/users.list/test). When using Heroku, make sure to put the user IDs into quotes like this: "UXXXXXX", "UYYYYYY"
+- `slack.disabledUsers` (or `DISABLED_USERS` for Heroku) to disable **users** if you want specific people on your team to not receive any Oskar messages at all (Go here to find out your user IDs: https://api.slack.com/methods/users.list/test). When using Heroku, make sure to put the list IDs into quotes like this: "UXXXXXX", "UYYYYYY"
+- `slack.disabledChannels` (or `DISABLED_CHANNELS` for Heroku) to disable **channels** that Oskar is part of (Go here to find out your channel IDs: https://api.slack.com/methods/channels.list/test). When using Heroku, make sure to put the user IDs into quotes like this: "CXXXXXX", "CYYYYYY"
 
 By default your dashboard is protected via a simple HTTP auth mechanism. (we'll try to improve this in the future)
 - `auth.username` and `auth.password` (or `AUTH_USERNAME` and `AUTH_PASSWORD` for Heroku) define your login data for the dashboard. Make sure to share those with your team.
 
 See the following instructions if you set up Oskar for the first time.
 
+## The build process
+
+We're using a [CoffeeScript buildpack for Heroku](https://github.com/aergonaut/heroku-buildpack-coffeescript) to compile the CoffeeScript directly on the server, and save ourselves from committing the compiled JS files to the repository.
+
+For this purpose you have to install the buildpack on your Heroku account, before you :
+`heroku create --buildpack https://github.com/aergonaut/heroku-buildpack-coffeescript.git`
+
+For more information on how to Deploy CoffeeScript to Heroku, check out [this blog post](http://blog.victorquinn.com/deploy-coffeescript-node-app-to-heroku).
+
 # Development and Contributing
 
 ## Local environment quickstart
-
-- Download and install nodeJS: https://nodejs.org/download/
-- Install Grunt: `npm install grunt -g`
-- Run `npm install` to install dependencies
-- Start the local app using Heroku Foreman, with: `foreman start web`
-- You can reach the site at http://localhost:5000
-- Compile & watch Sass files: `grunt watch`. TODO: Document this better because it actually needs to be done before every contribution.
-
-## Unit tests
-
-Oskar is being tested with [Mocha](http://mochajs.org/) and [should.js](https://github.com/tj/should.js/)
 
 First, we need to install MongoDB if you don't have it running already. Full instructions are [here](http://docs.mongodb.org/manual/installation/):
 
@@ -90,12 +88,21 @@ Now we're running, we can initialise the database:
 
     $ mongod
 
+- Download and install nodeJS: https://nodejs.org/download/
+- Install Grunt: `npm install grunt -g`
+- Run `npm install` to install dependencies
+- Run `grunt prepublish` to build the app: this copies the source files over to the `target` folder and compiles CoffeeScript to JavaScript
+- Start the local app using Heroku Foreman, with: `foreman start web`
+- You can reach the site at http://localhost:5000
+- Compile & watch CoffeeScript and SASS files using `grunt watch`
+
+## Unit tests
+
+Oskar is being tested with [Mocha](http://mochajs.org/) and [should.js](https://github.com/tj/should.js/)
+For the mongo tests to pass, you'll have to run a mongo database under `mongodb://localhost:27017`.
+
 Run the unit tests for all modules:
 
     $ npm test
 
 To run only a single unit test call the test file explicitly, such as `npm test test/inputHelper.coffee`
-
-For the mongo tests to pass, you'll have to run a mongo database under `mongodb://localhost:27017`.
-
-You will need to modify the test parameters in `package.json` under `scripts.test`, to give the test suite a valid Slack API key to test with. We will shortly be updating the repository so that tests can be run on a Slack test account, though.
