@@ -71,16 +71,18 @@ class Oskar
     if (user and user.presence isnt 'active')
       return
 
-    # if user is not onboarded, do so
-    if !@onboardingHelper.isOnboarded(data.userId)
-      return @onboardingHelper.welcome(data.userId)
-
     # if a user exists, create, otherwise go ahead without
     @mongo.userExists(data.userId).then (res) =>
       if !res
         @mongo.saveUser(user).then (res) =>
+          # if user is not onboarded, do so
+          if !@onboardingHelper.isOnboarded(data.userId)
+            return @onboardingHelper.welcome(data.userId)
           @requestUserFeedback data.userId, data.status
       else
+        # if user is not onboarded, do so
+        if !@onboardingHelper.isOnboarded(data.userId)
+          return @onboardingHelper.welcome(data.userId)
         @requestUserFeedback data.userId, data.status
 
   messageHandler: (message) =>
@@ -224,8 +226,13 @@ class Oskar
 
   composeMessage: (userId, messageType, obj) ->
 
+    # introduction
+    if messageType is 'introduction'
+      userObj = @slack.getUser userId
+      statusMsg = OskarTexts.introduction.format userObj.profile.first_name
+
     # request feedback
-    if messageType is 'requestFeedback'
+    else if messageType is 'requestFeedback'
       userObj = @slack.getUser userId
       if obj < 1
         random = Math.floor(Math.random() * OskarTexts.requestFeedback.random.length)

@@ -43,8 +43,11 @@ routes = (app, mongo, slack) ->
           filteredStatuses[status.id]              = status.feedback
           filteredStatuses[status.id].date         = new Date status.feedback.timestamp
           filteredStatuses[status.id].statusString = OskarTexts.statusText[status.feedback.status]
-        users.sort (a, b) ->
-          filteredStatuses[a.id].status > filteredStatuses[b.id].status
+
+        # only sort when more than one user
+        if statuses.length > 1
+          users.sort (a, b) ->
+            filteredStatuses[a.id].status > filteredStatuses[b.id].status
 
       res.render('pages/dashboard', { users: users, statuses: filteredStatuses })
 
