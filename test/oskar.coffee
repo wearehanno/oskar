@@ -523,7 +523,7 @@ describe 'oskar', ->
       oskar.onboardingHandler message
       composeMessageStub.called.should.be.equal true
 
-    it 'should call welcome message of onboarding helper when user is not onboarded', ->
+    it 'should call welcome message of onboarding helper when user is not onboarded', (done) ->
       data =
         userId: 'user2'
 
@@ -535,7 +535,11 @@ describe 'oskar', ->
 
       isOnboardedStub.returns false
       oskar.presenceHandler data
-      welcomeStub.called.should.be.equal true
+
+      setTimeout ->
+        welcomeStub.called.should.be.equal true
+        done()
+      , 100
 
     it 'should call advance message of onboarding helper when user is not onboarded', ->
       data =
