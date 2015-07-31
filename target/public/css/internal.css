@@ -1,0 +1,130 @@
+nav.top-nav.mini {
+  background-color: #19263C;
+  padding: 0.23333rem 1.66667rem !important;
+}
+
+.entry-summary span {
+  color: #AAA;
+}
+
+.top-nav li a {
+  font-weight: 300;
+}
+
+.nav-main--desktop .logo {
+  top: -4px;
+}
+
+@media only screen and (min-width: 40.063em) {
+  .main-content>section {
+    padding: 5rem 0;
+  }
+}
+
+.post-listing .post-listing__listing-item {
+  padding-bottom: 0.56666rem;
+}
+
+.status-1 {
+  color: #e23d28;
+}
+
+.status-2 {
+  color: #e23d28;
+}
+
+.status-3 {
+  color: #FF851B;
+}
+
+.status-4 {
+  color: #2ECC40;
+}
+
+.status-5 {
+  color: #2ECC40;
+}
+
+article:hover {
+  opacity: 0.75;
+}
+
+article:hover h2 {
+  color: #000 !important;
+}
+
+.comment {
+  width: 24px;
+  opacity: 0.5;
+  margin-left: 6px;
+}
+
+.tpd-content {
+  font-size: 14px;
+}
+
+.post-listing-single {
+
+}
+
+.post-listing-single .post-listing__listing-item .thumbnail {
+  display: inline;
+  width: 96px;
+  margin-bottom: 16px;
+}
+
+.post-listing .post-listing__listing-item .entry-summary {
+  max-width: none;
+}
+
+#container {
+  min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto;
+  margin-top: 3em;
+}
+
+
+.post-listing__listing-item {
+ /* width: 49%;
+  float: left;*/
+}
+
+.post-listing .post-listing__listing-item:first-of-type {
+  margin-top: 1rem;
+  padding-top: 0.3rem;
+  border-bottom: 1px solid #eaeaea;
+  border-top: none;
+}
+
+.post-listing .post-listing__listing-item:last-of-type {
+  border: none;
+}
+
+.post-listing .post-listing__listing-item {
+  border-bottom: 1px solid #eaeaea;
+  padding-top: 0.3rem;
+  padding-bottom: 1rem;
+  border-top: none;
+}
+
+  .post-listing .post-listing__listing-item .post-listing__listing-item__thumbnail {
+    display: inline;
+  }
+
+.post-listing .post-listing__listing-item--detail {
+  width: 100%;
+}
+
+.post-listing__listing-item .feedback-message {
+  font-size: 0.75em;
+  line-height: 1.5;
+  min-height: 3em;
+  margin-top: 0.5em;
+  padding-right: 1em;
+  color: #999;
+}
+
+@media only screen and (max-width: 40em) {
+  .post-listing__listing-item__content {
+    text-align: center;
+  }
+}
