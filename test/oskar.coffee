@@ -498,7 +498,7 @@ describe 'oskar', ->
       composeMessageStub.args[2][0].should.be.equal team[2]
 
       composeMessageStub.args[0][1].should.be.equal 'newUserFeedbackToUser'
-      composeMessageStub.args[0][2].should.have.property 'first_name'
+      composeMessageStub.args[0][2].should.have.property 'name'
       composeMessageStub.args[0][2].should.have.property 'status'
       composeMessageStub.args[0][2].should.have.property 'feedback'
 

@@ -211,13 +211,13 @@ class Oskar
 
     # compose user details
     userStatus =
-      first_name : user.profile.first_name
+      name       : user.profile.first_name || user.name
       status     : status
       feedback   : feedback
 
     # send update to all users
     if (channelId = process.env.CHANNEL_ID)
-      return @composeMessage user,  'newUserFeedbackToChannel', userStatus
+      return @composeMessage userId, 'newUserFeedbackToChannel', userStatus
 
     userIds = @slack.getUserIds()
     userIds.forEach (user) =>
@@ -229,14 +229,16 @@ class Oskar
     # introduction
     if messageType is 'introduction'
       userObj = @slack.getUser userId
-      statusMsg = OskarTexts.introduction.format userObj.profile.first_name
+      name = userObj.profile.first_name || userObj.name
+      statusMsg = OskarTexts.introduction.format name
 
     # request feedback
     else if messageType is 'requestFeedback'
       userObj = @slack.getUser userId
       if obj < 1
         random = Math.floor(Math.random() * OskarTexts.requestFeedback.random.length)
-        statusMsg = OskarTexts.requestFeedback.random[random].format userObj.profile.first_name
+        name = userObj.profile.first_name || userObj.name
+        statusMsg = OskarTexts.requestFeedback.random[random].format name
         statusMsg += OskarTexts.requestFeedback.selection
       else
         statusMsg = OskarTexts.requestFeedback.options[obj-1]
@@ -246,26 +248,28 @@ class Oskar
       statusMsg = ""
       obj.forEach (user) =>
         userObj = @slack.getUser user.id
-        statusMsg += OskarTexts.revealChannelStatus.status.format userObj.profile.first_name, user.feedback.status
+        name = userObj.profile.first_name || userObj.name
+        statusMsg += OskarTexts.revealChannelStatus.status.format name, user.feedback.status
         if user.feedback.message
           statusMsg += OskarTexts.revealChannelStatus.message.format user.feedback.message
         statusMsg += "\r\n"
 
     # user info
     else if messageType is 'revealUserStatus'
+      name = obj.user.profile.first_name || obj.user.name
       if !obj.status
-        statusMsg = OskarTexts.revealUserStatus.error.format obj.user.profile.first_name
+        statusMsg = OskarTexts.revealUserStatus.error.format name
       else
-        statusMsg = OskarTexts.revealUserStatus.status.format obj.user.profile.first_name, obj.status
+        statusMsg = OskarTexts.revealUserStatus.status.format name, obj.status
         if obj.message
           statusMsg += OskarTexts.revealUserStatus.message.format obj.message
 
     else if messageType is 'newUserFeedbackToChannel'
-      statusMsg = OskarTexts.newUserFeedback.format obj.first_name, obj.status, obj.feedback
+      statusMsg = OskarTexts.newUserFeedback.format obj.name, obj.status, obj.feedback
       return @slack.postMessageToChannel process.env.CHANNEL_ID, statusMsg
 
     else if messageType is 'newUserFeedbackToUser'
-      statusMsg = OskarTexts.newUserFeedback.format obj.first_name, obj.status, obj.feedback
+      statusMsg = OskarTexts.newUserFeedback.format obj.name, obj.status, obj.feedback
       return @slack.postMessage userId, statusMsg
 
     # faq
