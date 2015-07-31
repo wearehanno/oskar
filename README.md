@@ -64,15 +64,6 @@ By default your dashboard is protected via a simple HTTP auth mechanism. (we'll 
 
 See the following instructions if you set up Oskar for the first time.
 
-## The build process
-
-We're using a [CoffeeScript buildpack for Heroku](https://github.com/aergonaut/heroku-buildpack-coffeescript) to compile the CoffeeScript directly on the server, and save ourselves from committing the compiled JS files to the repository.
-
-For this purpose you have to install the buildpack on your Heroku account, before you :
-`heroku create --buildpack https://github.com/aergonaut/heroku-buildpack-coffeescript.git`
-
-For more information on how to Deploy CoffeeScript to Heroku, check out [this blog post](http://blog.victorquinn.com/deploy-coffeescript-node-app-to-heroku).
-
 # Development and Contributing
 
 ## Local environment quickstart
