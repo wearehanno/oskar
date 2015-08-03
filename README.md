@@ -23,11 +23,11 @@ Oskar automatically asks you two times a day how you're doing. You can reply to 
 All data is collected in a database and made visible via the dashboard, which can be found at the URL:
 `http://your-oskar-url.com/dashboard` (find instruction on how to set a username/password below)
 
-You can send the following commands directly to Oskar:
+If you're hosting on Heroku, then this URL is going to be something like _http://myherokuappname.herokuapp.com/dashboard_.
+
+You can send the following commands directly as a chat message to Oskar:
 - `How is @member?` - Tells you how a specific team member is doing
 - `How is @channel?` - Returns the current status for the whole group
-
-Oskar is not just a Slackbot. He also comes with a dashboard view, allowing you to see visualisations of team status over time. This is visible at `/dashboard`. If you're hosting on heroku, then this URL is going to be something like _http://myherokuappname.herokuapp.com/dashboard_. See below for info about restricting access to this dashboard.
 
 # The App
 
@@ -42,10 +42,10 @@ Oskar is not just a Slackbot. He also comes with a dashboard view, allowing you 
 
 There are two ways of configuring Oskar.
 
-1) Using local configuration
+1) Using local configuration:
 You copy the contents of the file `config/default.json` and create a new file `config/local.json` with your environment's variables.
 
-2) Using Heroku env variables
+2) Using Heroku env variables:
 Use `.env.sample` to set up your Heroku env variables, either setting them via the command line (as described [here](https://devcenter.heroku.com/articles/config-vars)) or directly from the Heroku panel.
 
 Here's the config variables you need to define:
@@ -53,7 +53,7 @@ Here's the config variables you need to define:
 - `slack.token` (or `SLACK_TOKEN` for Heroku) is the token of your team's Slackbot (you can create a new Slackbot here: https://yourteam.slack.com/services/new/bot)
 
 If you want to broadcast all user feedback to a channel instead of to each user individually:
-- `slack.channelId` (or `CHANNEL_ID` for Heroku) defines the channel where Oskar will broadcast all user messages. Add this parameter if you don't want Oskar to send the status feedback to each user's direct message channel. On Heroku, don't add quotes around the parameter like for the disabledUsers or disabledChannels parameters, just the channel ID: CXXXXXX
+- `slack.channelId` (or `CHANNEL_ID` for Heroku) defines the channel where Oskar will broadcast all user messages. Add this parameter if you don't want Oskar to send the status feedback to each user's direct message channel. On Heroku, don't add quotes around the parameter, just the channel ID: CXXXXXX
 
 Additionally you can disable specific channels or users:
 - `slack.disabledUsers` (or `DISABLED_USERS` for Heroku) to disable **users** if you want specific people on your team to not receive any Oskar messages at all (Go here to find out your user IDs: https://api.slack.com/methods/users.list/test). When using Heroku, make sure to put the list IDs into quotes like this: "UXXXXXX", "UYYYYYY"
@@ -78,6 +78,8 @@ First, we need to install MongoDB if you don't have it running already. Full ins
 Now we're running, we can initialise the database:
 
     $ mongod
+
+After making sure that MongoDB is running on port 27071, build the app as follows:
 
 - Download and install nodeJS: https://nodejs.org/download/
 - Install Grunt: `npm install grunt -g`
