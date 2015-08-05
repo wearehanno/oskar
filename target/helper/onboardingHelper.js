@@ -26,12 +26,14 @@ OnboardingHelper = (function(_super) {
   OnboardingHelper.prototype.retainOnboardingStatusForUser = function(userId) {
     return this.mongo.getOnboardingStatus(userId).then((function(_this) {
       return function(res) {
+        console.log("save onboarding for user " + userId + ": " + res);
         return _this.onboardingStatus[userId] = res;
       };
     })(this));
   };
 
   OnboardingHelper.prototype.isOnboarded = function(userId) {
+    console.log(("onboarding status " + userId + ": ") + this.onboardingStatus[userId]);
     return this.onboardingStatus[userId] === 3;
   };
 
