@@ -88,15 +88,9 @@ Oskar = (function() {
       return function(res) {
         if (!res) {
           return _this.mongo.saveUser(user).then(function(res) {
-            if (!_this.onboardingHelper.isOnboarded(data.userId)) {
-              return _this.onboardingHelper.welcome(data.userId);
-            }
             return _this.requestUserFeedback(data.userId, data.status);
           });
         } else {
-          if (!_this.onboardingHelper.isOnboarded(data.userId)) {
-            return _this.onboardingHelper.welcome(data.userId);
-          }
           return _this.requestUserFeedback(data.userId, data.status);
         }
       };
@@ -130,6 +124,9 @@ Oskar = (function() {
 
   Oskar.prototype.requestUserFeedback = function(userId, status) {
     var date, user;
+    if (!this.onboardingHelper.isOnboarded(data.userId)) {
+      return this.onboardingHelper.welcome(data.userId);
+    }
     this.mongo.saveUserStatus(userId, status);
     if (status !== 'active' && status !== 'triggered') {
       return;

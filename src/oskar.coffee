@@ -75,14 +75,8 @@ class Oskar
     @mongo.userExists(data.userId).then (res) =>
       if !res
         @mongo.saveUser(user).then (res) =>
-          # if user is not onboarded, do so
-          if !@onboardingHelper.isOnboarded(data.userId)
-            return @onboardingHelper.welcome(data.userId)
           @requestUserFeedback data.userId, data.status
       else
-        # if user is not onboarded, do so
-        if !@onboardingHelper.isOnboarded(data.userId)
-          return @onboardingHelper.welcome(data.userId)
         @requestUserFeedback data.userId, data.status
 
   messageHandler: (message) =>
@@ -112,6 +106,9 @@ class Oskar
     @composeMessage(message.userId, message.type)
 
   requestUserFeedback: (userId, status) ->
+
+    if !@onboardingHelper.isOnboarded(data.userId)
+      return @onboardingHelper.welcome(data.userId)
 
     @mongo.saveUserStatus userId, status
 
