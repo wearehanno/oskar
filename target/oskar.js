@@ -124,9 +124,11 @@ Oskar = (function() {
 
   Oskar.prototype.requestUserFeedback = function(userId, status) {
     var date, user;
+    console.log('request user feedback: ' + userId);
     if (!this.onboardingHelper.isOnboarded(data.userId)) {
       return this.onboardingHelper.welcome(data.userId);
     }
+    console.log('onboarded: OK');
     this.mongo.saveUserStatus(userId, status);
     if (status !== 'active' && status !== 'triggered') {
       return;
@@ -136,15 +138,18 @@ Oskar = (function() {
     if (TimeHelper.isWeekend() || TimeHelper.isDateInsideInterval(0, 8, date)) {
       return;
     }
+    console.log('check timestamp');
     return this.mongo.getLatestUserTimestampForProperty('feedback', userId).then((function(_this) {
       return function(timestamp) {
         var today;
+        console.log('timestamp: ' + timestamp);
         if (timestamp === false) {
           return;
         }
         today = new Date();
         return _this.mongo.getUserFeedbackCount(userId, today).then(function(count) {
           var requestsCount;
+          console.log('feedback count: ' + count);
           if (count < 2 && TimeHelper.hasTimestampExpired(6, timestamp)) {
             requestsCount = _this.slack.getfeedbackRequestsCount(userId);
             _this.slack.setfeedbackRequestsCount(userId, requestsCount + 1);
