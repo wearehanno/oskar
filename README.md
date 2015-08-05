@@ -20,14 +20,14 @@ See the [Heroku documentation](https://devcenter.heroku.com/articles/config-vars
 
 Oskar automatically asks you two times a day how you're doing. You can reply to him with a number between 1 to 5, and he will then ask you for feedback to know what's the trigger for your current low or high.
 
+You can send the following commands directly as a chat message to Oskar:
+- `How is @member?` - Tells you how a specific team member is doing
+- `How is @channel?` - Returns the current status for the whole group
+
 All data is collected in a database and made visible via the dashboard, which can be found at the URL:
 `http://your-oskar-url.com/dashboard` (find instruction on how to set a username/password below)
 
 If you're hosting on Heroku, then this URL is going to be something like _http://myherokuappname.herokuapp.com/dashboard_.
-
-You can send the following commands directly as a chat message to Oskar:
-- `How is @member?` - Tells you how a specific team member is doing
-- `How is @channel?` - Returns the current status for the whole group
 
 # The App
 
