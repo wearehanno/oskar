@@ -59,6 +59,10 @@ article:hover h2 {
   margin-left: 6px;
 }
 
+.send-msg-form {
+  display: none;
+}
+
 .tpd-content {
   font-size: 14px;
 }

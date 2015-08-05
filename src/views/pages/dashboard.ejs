@@ -56,11 +56,16 @@
                         </p>
 
                         <!-- User feedback -->
-                        <p class="feedback-message">
+                        <div class="feedback-message">
                           <% if(statuses[user.id] && statuses[user.id].message) {%>
                             <%= statuses[user.id].message %>
                           <% } %>
-                        </p>
+                          <a class="send-msg" href="">Send message</a>
+                          <form class="send-msg-form">
+                            <input class="send-msg-form-userid" type="hidden" value="<%= user.id %>" />
+                            <input class="send-msg-form-message" type="text" placeholder="Type your message to this user here..." />
+                          </form>
+                        </div>
 
                       </div>
                     </div>

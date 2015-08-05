@@ -1,10 +1,14 @@
-var OskarTexts, basicAuth, config, routes;
+var OskarTexts, basicAuth, bodyParser, config, jsonParser, routes;
 
 OskarTexts = require('../content/oskarTexts');
 
 basicAuth = require('basic-auth-connect');
 
+bodyParser = require('body-parser');
+
 config = require('config');
+
+jsonParser = bodyParser.json();
 
 routes = function(app, mongo, slack) {
   var auth, password, username;
@@ -63,7 +67,7 @@ routes = function(app, mongo, slack) {
       });
     };
   })(this));
-  return app.get('/status/:userId', (function(_this) {
+  app.get('/status/:userId', (function(_this) {
     return function(req, res) {
       return mongo.getUserData(req.params.userId).then(function(data) {
         var graphData, userData;
@@ -78,6 +82,19 @@ routes = function(app, mongo, slack) {
           userData: userData,
           graphData: JSON.stringify(graphData)
         });
+      });
+    };
+  })(this));
+  return app.post('/message/:userId', jsonParser, (function(_this) {
+    return function(req, res) {
+      if (!req.body.message) {
+        return res.status(400).send({
+          status: 'fail'
+        });
+      }
+      slack.postMessage(req.params.userId, req.body.message);
+      return res.json({
+        status: 'ok'
       });
     };
   })(this));

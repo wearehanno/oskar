@@ -121,16 +121,19 @@ class SlackClient extends EventEmitter
 		return true
 
 	# post message to slack
-	postMessage: (userId, message) ->
+	postMessage: (userId, message, cb) =>
 
 		# if channels object already exists
 		if (userId in @channels)
 			return @slack.postMessage @channels[userId].channel.id, message, () ->
+				cb()
 
 		# otherwise open new one
 		@slack.openDM userId, (res) =>
 			@channels[userId] = res
 			@slack.postMessage res.channel.id, message, () ->
+				if (cb)
+					cb arguments...
 
 	postMessageToChannel: (channelId, message, cb) ->
 

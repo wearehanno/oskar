@@ -32,6 +32,7 @@ SlackClient = (function(_super) {
     if (token == null) {
       token = null;
     }
+    this.postMessage = __bind(this.postMessage, this);
     this.messageHandler = __bind(this.messageHandler, this);
     this.presenceChangeHandler = __bind(this.presenceChangeHandler, this);
     this.setUserPresence = __bind(this.setUserPresence, this);
@@ -183,14 +184,20 @@ SlackClient = (function(_super) {
     return true;
   };
 
-  SlackClient.prototype.postMessage = function(userId, message) {
+  SlackClient.prototype.postMessage = function(userId, message, cb) {
     if ((__indexOf.call(this.channels, userId) >= 0)) {
-      return this.slack.postMessage(this.channels[userId].channel.id, message, function() {});
+      return this.slack.postMessage(this.channels[userId].channel.id, message, function() {
+        return cb();
+      });
     }
     return this.slack.openDM(userId, (function(_this) {
       return function(res) {
         _this.channels[userId] = res;
-        return _this.slack.postMessage(res.channel.id, message, function() {});
+        return _this.slack.postMessage(res.channel.id, message, function() {
+          if (cb) {
+            return cb.apply(null, arguments);
+          }
+        });
       };
     })(this));
   };

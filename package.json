@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "basic-auth-connect": "^1.0.0",
+    "body-parser": "^1.13.3",
     "coffee-script": "~1.9.0",
     "config": "^1.14.0",
     "ejs": "^2.3.1",
@@ -48,6 +49,7 @@
     "mocha": "~1.13.0",
     "should": "~2.0.2",
     "sinon": "^1.14.1",
+    "supertest": "^1.0.1",
     "when": "^3.7.3"
   },
   "engines": {

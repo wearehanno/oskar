@@ -1,6 +1,9 @@
 OskarTexts   = require '../content/oskarTexts'
 basicAuth    = require 'basic-auth-connect'
+bodyParser   = require 'body-parser'
 config       = require 'config'
+
+jsonParser   = bodyParser.json()
 
 routes = (app, mongo, slack) ->
 
@@ -64,5 +67,12 @@ routes = (app, mongo, slack) ->
       userData.statusString = OskarTexts.statusText[userData.status.status]
 
       res.render('pages/status', { userData: userData, graphData: JSON.stringify(graphData) })
+
+  # message user
+  app.post '/message/:userId', jsonParser, (req, res) =>
+    if !req.body.message
+      return res.status(400).send({ status: 'fail' })
+    slack.postMessage req.params.userId, req.body.message
+    res.json( { status: 'ok' } )
 
 module.exports = routes
