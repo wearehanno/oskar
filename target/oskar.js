@@ -125,8 +125,8 @@ Oskar = (function() {
   Oskar.prototype.requestUserFeedback = function(userId, status) {
     var date, user;
     console.log('request user feedback: ' + userId);
-    if (!this.onboardingHelper.isOnboarded(data.userId)) {
-      return this.onboardingHelper.welcome(data.userId);
+    if (!this.onboardingHelper.isOnboarded(userId)) {
+      return this.onboardingHelper.welcome(userId);
     }
     console.log('onboarded: OK');
     this.mongo.saveUserStatus(userId, status);

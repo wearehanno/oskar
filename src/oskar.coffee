@@ -109,8 +109,8 @@ class Oskar
 
     console.log 'request user feedback: ' + userId
 
-    if !@onboardingHelper.isOnboarded(data.userId)
-      return @onboardingHelper.welcome(data.userId)
+    if !@onboardingHelper.isOnboarded(userId)
+      return @onboardingHelper.welcome(userId)
 
     console.log 'onboarded: OK'
 
