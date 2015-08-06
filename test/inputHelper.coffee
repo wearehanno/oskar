@@ -41,3 +41,17 @@ describe 'InputHelper', ->
     text = 'I need some help'
     response = InputHelper.isAskingForHelp text
     should(response).be.equal true
+
+  it 'should return the status number and feedback message', ->
+    text = '3: feeling average :confused:'
+    response = InputHelper.isStatusAndFeedback text
+    response.status.should.be.equal '3'
+    response.message.should.be.equal 'feeling average :confused:'
+
+  it 'should return false if not number and feedback message', ->
+    text = '4'
+    response = InputHelper.isStatusAndFeedback text
+    response.should.be.equal false
+    text = 'something'
+    response = InputHelper.isStatusAndFeedback text
+    response.should.be.equal false

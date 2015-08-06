@@ -19,4 +19,13 @@ class InputHelper
       return true
     return false
 
+  @isStatusAndFeedback: (input) ->
+    messagePattern = /^(\d):\s*([\w\s\:]+)/i
+    matches = input.match messagePattern
+    if matches is null
+      return false
+    obj =
+      status: matches[1]
+      message: matches[2]
+
 module.exports = InputHelper

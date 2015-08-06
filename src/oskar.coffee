@@ -107,12 +107,8 @@ class Oskar
 
   requestUserFeedback: (userId, status) ->
 
-    console.log 'request user feedback: ' + userId
-
     if !@onboardingHelper.isOnboarded(userId)
       return @onboardingHelper.welcome(userId)
-
-    console.log 'onboarded: OK'
 
     @mongo.saveUserStatus userId, status
 
@@ -126,11 +122,7 @@ class Oskar
     if (TimeHelper.isWeekend() || TimeHelper.isDateInsideInterval 0, 8, date)
       return
 
-    console.log 'check timestamp'
-
     @mongo.getLatestUserTimestampForProperty('feedback', userId).then (timestamp) =>
-
-      console.log 'timestamp: ' + timestamp
 
       # if user doesnt exist, skip
       if timestamp is false
@@ -139,8 +131,6 @@ class Oskar
       # if timestamp has expired and user has not already been asked two times, ask for status
       today = new Date()
       @mongo.getUserFeedbackCount(userId, today).then (count) =>
-
-        console.log 'feedback count: ' + count
 
         if (count < 2 && TimeHelper.hasTimestampExpired 6, timestamp)
           requestsCount = @slack.getfeedbackRequestsCount(userId)
@@ -152,6 +142,14 @@ class Oskar
     # if user has already submitted feedback in the last x hours, reject
     if (latestFeedbackTimestamp && !TimeHelper.hasTimestampExpired 4, latestFeedbackTimestamp)
       return @composeMessage message.user, 'alreadySubmitted'
+
+    # check if user has send status and feedback in one message
+    obj = InputHelper.isStatusAndFeedback message.text
+    if obj isnt false
+      @mongo.saveUserFeedback message.user, obj.status
+      @handleFeedbackMessage({user: message.user , text: obj.message})
+      @slack.setfeedbackRequestsCount(message.user, 0)
+      return
 
     # if user didn't send valid feedback
     if !InputHelper.isValidStatus message.text

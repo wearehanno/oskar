@@ -2,6 +2,7 @@
 # Setup the tests
 ###################################################################
 should           = require 'should'
+request          = require 'supertest'
 sinon            = require 'sinon'
 whenLib          = require 'when'
 {EventEmitter}   = require 'events'
@@ -434,6 +435,23 @@ describe 'oskar', ->
         done()
       , 100
 
+    it 'should allow user to send status and feedback message in one', (done) ->
+
+      message =
+        text: '3: not feeling so well'
+        user: 'user4'
+
+      oskar.messageHandler message
+
+      setTimeout ->
+        composeMessageStub.called.should.be.equal true
+        composeMessageStub.args[0][1].should.be.equal 'feedbackMessageReceived'
+        saveUserFeedbackStub.called.should.be.equal true
+        saveUserFeedbackMessageStub.called.should.be.equal true
+        done()
+      , 100
+
+
     it 'should return a faq message when user asks for help', (done) ->
 
       message =
@@ -671,3 +689,27 @@ describe 'oskar', ->
 
       oskar.composeMessage 'user1', 'invalidInput'
       # console.log postMessageStub.args
+
+  describe 'Routes', ->
+
+    req = null
+
+    before ->
+      req = request('http://localhost:5000');
+
+    it 'should return 400 for an empty message', (done) ->
+
+      req
+        .post('/message/user1')
+        .expect(400, done);
+
+    it 'should send a message to a user', (done) ->
+
+      req
+        .post('/message/U08CKGJ90')
+        .send({ message: 'this is a test message' })
+        .end (err, res) ->
+          setTimeout ->
+            postMessageStub.called.should.be.equal true
+            done()
+          , 100
