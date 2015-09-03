@@ -45,7 +45,7 @@
                         <!-- User status detail -->
                         <p class="entry-summary">
                           <% if (statuses[user.id] && statuses[user.id].date) { %>
-                            <span>Last reported:</span>
+                            <span>Last reported </span>
                             <abbr class="timeago" title="<%= statuses[user.id].date.toISOString() %>">
                               <%= statuses[user.id].date.getDate() %>.<%= statuses[user.id].date.getMonth() + 1 %>.<%= statuses[user.id].date.getFullYear() %>
                               <%= statuses[user.id].date.getHours() %>:<%= statuses[user.id].date.getMinutes() %>
@@ -58,13 +58,13 @@
                         <!-- User feedback -->
                         <div class="feedback-message">
                           <% if(statuses[user.id] && statuses[user.id].message) {%>
-                            <%= statuses[user.id].message %>
+                            Why? <span class="feedback-quoted">"<%= statuses[user.id].message %>"</span>
                           <% } %>
-                          <a class="send-msg" href="">Send message</a>
+<!--                           <a class="send-msg" href="">Send message</a>
                           <form class="send-msg-form">
                             <input class="send-msg-form-userid" type="hidden" value="<%= user.id %>" />
                             <input class="send-msg-form-message" type="text" placeholder="Type your message to this user here..." />
-                          </form>
+                          </form> -->
                         </div>
 
                       </div>

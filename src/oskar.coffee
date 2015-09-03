@@ -13,7 +13,6 @@ OskarTexts       = require './content/oskarTexts'
 class Oskar
 
   constructor: (mongo, slack, onboardingHelper) ->
-
     # set up app, mongo and slack
     @app = express()
     @app.set 'view engine', 'ejs'
@@ -36,6 +35,7 @@ class Oskar
       return
 
     @setupEvents()
+    console.log "Oskar is ready"
 
     # check for user's status every hour
     setInterval =>
@@ -53,7 +53,7 @@ class Oskar
 
     @app.set 'port', process.env.PORT || 5000
     @app.listen @app.get('port'), ->
-      console.log "Node app is running on port 5000"
+      console.log "Node app will run on port 5000"
 
   presenceHandler: (data) =>
 
@@ -81,20 +81,30 @@ class Oskar
 
   messageHandler: (message) =>
 
+    user = @slack.getUser message.user
+
     # if user is not onboarded, run until onboarded
     if !@onboardingHelper.isOnboarded(message.user)
       return @onboardingHelper.advance(message.user, message.text)
 
     # if user is asking for feedback of user with ID
     if userId = InputHelper.isAskingForUserStatus(message.text)
+      onUser = @slack.getUser userId
+      name = onUser?.name
+      if userId == 'channel'
+        name = 'everyone'
+      name = name ? 'unknown'
+      console.log "#{user.name} is checking up on #{name}"
       return @revealStatus userId, message
 
     # if comment is allowed, save in DB
     if @slack.isUserCommentAllowed message.user
+      console.log "Recording status for #{user.name}"
       return @handleFeedbackMessage message
 
     # if user is asking for help, send a link to the FAQ
     if InputHelper.isAskingForHelp(message.text)
+      console.log "Asking for help"
       return @composeMessage message.user, 'faq'
 
     # if feedback is long enough ago, evaluate

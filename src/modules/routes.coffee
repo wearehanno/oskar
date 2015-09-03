@@ -7,17 +7,9 @@ jsonParser   = bodyParser.json()
 
 routes = (app, mongo, slack) ->
 
-  app.get '/', (req, res) =>
-    res.render 'pages/index'
-
   app.get '/faq', (req, res) =>
+    console.log "GET /faq"
     res.render 'pages/faq'
-
-  app.get '/signup', (req, res) =>
-    res.render 'pages/signup'
-
-  app.get '/thank-you', (req, res) =>
-    res.render 'pages/thank-you'
 
   # protect dashboard from external access
   username = process.env.AUTH_USERNAME || config.get 'auth.username'
@@ -25,7 +17,8 @@ routes = (app, mongo, slack) ->
   auth = basicAuth username, password
 
   # dashboard
-  app.get '/dashboard', auth, (req, res) =>
+  app.get '/', auth, (req, res) =>
+    console.log "GET /dashboard"
 
     # read users
     users = slack.getUsers()
@@ -37,20 +30,29 @@ routes = (app, mongo, slack) ->
       return user.id
 
     # read users status
-    mongo.getAllUserFeedback(userIds).then (statuses) =>
+    mongo.getAllUserFeedback(userIds).then (slimUsers) =>
 
       filteredStatuses = []
 
-      if statuses.length
-        statuses.forEach (status) ->
-          filteredStatuses[status.id]              = status.feedback
-          filteredStatuses[status.id].date         = new Date status.feedback.timestamp
-          filteredStatuses[status.id].statusString = OskarTexts.statusText[status.feedback.status]
+      if slimUsers.length
+        slimUsers.forEach (u) ->
+          if u.feedback?
+            filteredStatuses[u.id]              = u.feedback
+            filteredStatuses[u.id].date         = new Date u.feedback.timestamp
+            filteredStatuses[u.id].statusString = OskarTexts.statusText[u.feedback.status]
 
         # only sort when more than one user
-        if statuses.length > 1
+        if users.length > 1
           users.sort (a, b) ->
-            filteredStatuses[a.id].status > filteredStatuses[b.id].status
+            if not filteredStatuses[a.id]?
+              if not filteredStatuses[b.id]?
+                a.name.toLowerCase() < b.name.toLowerCase()
+              else
+                1
+            else if not filteredStatuses[b.id]?
+              -1
+            else
+              filteredStatuses[a.id].date < filteredStatuses[b.id].date
 
       res.render('pages/dashboard', { users: users, statuses: filteredStatuses })
 

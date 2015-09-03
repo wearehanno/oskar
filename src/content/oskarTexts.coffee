@@ -8,15 +8,15 @@ OskarTexts =
   statusText:
     '1': 'pretty bad'
     '2': 'a bit down'
-    '3': 'alright'
-    '4': 'really good'
+    '3': 'ok'
+    '4': 'good'
     '5': 'awesome'
 
   introduction: "Hey {0}! Let me quickly introduce myself.\nMy name is Oskar, and the team has drafted me in to be their new happiness coach on Slack. I'm not going to bother you a lot, but every once in a while (usually twice a day), I'm gonna ask how you feel. Ready? *Just reply to this message and we'll give is a try* :smile:"
 
   firstMessage: "Alright! From now on, I'll check in once in a while to ask how you're feeling?'\n\nYou can reply to me with a number between 1 and 5, and I'll keep track of your answers over time and share them with your team.\n\nOK? Let's give it a try: *How do you feel right now?*\n
           (5) :heart_eyes_cat: Awesome\n
-          (4) :smile: Really good\n
+          (4) :smile: Good\n
           (3) :neutral_face: Alright\n
           (2) :pensive: A bit down\n
           (1) :tired_face: Pretty bad\n"
@@ -32,7 +32,7 @@ OskarTexts =
       "Nice to see you, {0}, Wanna tell me how you feel? A number between 1 and 5 is all I need.\n"
     ]
     selection: "(5) :heart_eyes_cat: Awesome\n
-                (4) :smile: Really good\n
+                (4) :smile: Good\n
                 (3) :neutral_face: Alright\n
                 (2) :pensive: A bit down\n
                 (1) :tired_face: Pretty bad\n"
