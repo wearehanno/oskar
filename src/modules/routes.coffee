@@ -7,10 +7,6 @@ jsonParser   = bodyParser.json()
 
 routes = (app, mongo, slack) ->
 
-  # app.get '/', (req, res) =>
-  #   console.log "GET /"
-  #   res.render 'pages/index'
-
   app.get '/faq', (req, res) =>
     console.log "GET /faq"
     res.render 'pages/faq'
