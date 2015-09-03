@@ -50,6 +50,7 @@ Oskar = (function() {
       return;
     }
     this.setupEvents();
+    console.log("Oskar is ready");
     setInterval((function(_this) {
       return function() {
         return _this.checkForUserStatus(_this.slack);
@@ -67,7 +68,7 @@ Oskar = (function() {
     routes(this.app, this.mongo, this.slack);
     this.app.set('port', process.env.PORT || 5000);
     return this.app.listen(this.app.get('port'), function() {
-      return console.log("Node app is running on port 5000");
+      return console.log("Node app will run on port 5000");
     });
   };
 
@@ -98,17 +99,27 @@ Oskar = (function() {
   };
 
   Oskar.prototype.messageHandler = function(message) {
-    var userId;
+    var name, onUser, user, userId;
+    user = this.slack.getUser(message.user);
     if (!this.onboardingHelper.isOnboarded(message.user)) {
       return this.onboardingHelper.advance(message.user, message.text);
     }
     if (userId = InputHelper.isAskingForUserStatus(message.text)) {
+      onUser = this.slack.getUser(userId);
+      name = onUser != null ? onUser.name : void 0;
+      if (userId === 'channel') {
+        name = 'everyone';
+      }
+      name = name != null ? name : 'unknown';
+      console.log("" + user.name + " is checking up on " + name);
       return this.revealStatus(userId, message);
     }
     if (this.slack.isUserCommentAllowed(message.user)) {
+      console.log("Recording status for " + user.name);
       return this.handleFeedbackMessage(message);
     }
     if (InputHelper.isAskingForHelp(message.text)) {
+      console.log("Asking for help");
       return this.composeMessage(message.user, 'faq');
     }
     return this.mongo.getLatestUserTimestampForProperty('feedback', message.user).then((function(_this) {
@@ -124,11 +135,9 @@ Oskar = (function() {
 
   Oskar.prototype.requestUserFeedback = function(userId, status) {
     var date, user;
-    console.log('request user feedback: ' + userId);
     if (!this.onboardingHelper.isOnboarded(userId)) {
       return this.onboardingHelper.welcome(userId);
     }
-    console.log('onboarded: OK');
     this.mongo.saveUserStatus(userId, status);
     if (status !== 'active' && status !== 'triggered') {
       return;
@@ -138,18 +147,15 @@ Oskar = (function() {
     if (TimeHelper.isWeekend() || TimeHelper.isDateInsideInterval(0, 8, date)) {
       return;
     }
-    console.log('check timestamp');
     return this.mongo.getLatestUserTimestampForProperty('feedback', userId).then((function(_this) {
       return function(timestamp) {
         var today;
-        console.log('timestamp: ' + timestamp);
         if (timestamp === false) {
           return;
         }
         today = new Date();
         return _this.mongo.getUserFeedbackCount(userId, today).then(function(count) {
           var requestsCount;
-          console.log('feedback count: ' + count);
           if (count < 2 && TimeHelper.hasTimestampExpired(6, timestamp)) {
             requestsCount = _this.slack.getfeedbackRequestsCount(userId);
             _this.slack.setfeedbackRequestsCount(userId, requestsCount + 1);
@@ -161,11 +167,22 @@ Oskar = (function() {
   };
 
   Oskar.prototype.evaluateFeedback = function(message, latestFeedbackTimestamp, firstFeedback) {
+    var obj;
     if (firstFeedback == null) {
       firstFeedback = false;
     }
     if (latestFeedbackTimestamp && !TimeHelper.hasTimestampExpired(4, latestFeedbackTimestamp)) {
       return this.composeMessage(message.user, 'alreadySubmitted');
+    }
+    obj = InputHelper.isStatusAndFeedback(message.text);
+    if (obj !== false) {
+      this.mongo.saveUserFeedback(message.user, obj.status);
+      this.handleFeedbackMessage({
+        user: message.user,
+        text: obj.message
+      });
+      this.slack.setfeedbackRequestsCount(message.user, 0);
+      return;
     }
     if (!InputHelper.isValidStatus(message.text)) {
       return this.composeMessage(message.user, 'invalidInput');

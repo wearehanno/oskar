@@ -31,6 +31,19 @@ InputHelper = (function() {
     return false;
   };
 
+  InputHelper.isStatusAndFeedback = function(input) {
+    var matches, messagePattern, obj;
+    messagePattern = /^(\d):\s*([\w\s\:]+)/i;
+    matches = input.match(messagePattern);
+    if (matches === null) {
+      return false;
+    }
+    return obj = {
+      status: matches[1],
+      message: matches[2]
+    };
+  };
+
   return InputHelper;
 
 })();

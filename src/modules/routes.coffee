@@ -7,21 +7,13 @@ jsonParser   = bodyParser.json()
 
 routes = (app, mongo, slack) ->
 
-  app.get '/', (req, res) =>
-    console.log "GET /"
-    res.render 'pages/index'
+  # app.get '/', (req, res) =>
+  #   console.log "GET /"
+  #   res.render 'pages/index'
 
   app.get '/faq', (req, res) =>
     console.log "GET /faq"
     res.render 'pages/faq'
-
-  app.get '/signup', (req, res) =>
-    console.log "GET /signup"
-    res.render 'pages/signup'
-
-  app.get '/thank-you', (req, res) =>
-    console.log "GET /thank-you"
-    res.render 'pages/thank-you'
 
   # protect dashboard from external access
   username = process.env.AUTH_USERNAME || config.get 'auth.username'
@@ -29,7 +21,7 @@ routes = (app, mongo, slack) ->
   auth = basicAuth username, password
 
   # dashboard
-  app.get '/dashboard', auth, (req, res) =>
+  app.get '/', auth, (req, res) =>
     console.log "GET /dashboard"
 
     # read users
@@ -64,7 +56,7 @@ routes = (app, mongo, slack) ->
             else if not filteredStatuses[b.id]?
               -1
             else
-              filteredStatuses[a.id].status > filteredStatuses[b.id].status
+              filteredStatuses[a.id].date < filteredStatuses[b.id].date
 
       res.render('pages/dashboard', { users: users, statuses: filteredStatuses })
 

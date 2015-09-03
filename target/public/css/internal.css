@@ -127,6 +127,10 @@ article:hover h2 {
   color: #999;
 }
 
+.feedback-quoted {
+  color: #444;
+}
+
 @media only screen and (max-width: 40em) {
   .post-listing__listing-item__content {
     text-align: center;

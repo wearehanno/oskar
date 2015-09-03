@@ -12,32 +12,19 @@ jsonParser = bodyParser.json();
 
 routes = function(app, mongo, slack) {
   var auth, password, username;
-  app.get('/', (function(_this) {
-    return function(req, res) {
-      return res.render('pages/index');
-    };
-  })(this));
   app.get('/faq', (function(_this) {
     return function(req, res) {
+      console.log("GET /faq");
       return res.render('pages/faq');
-    };
-  })(this));
-  app.get('/signup', (function(_this) {
-    return function(req, res) {
-      return res.render('pages/signup');
-    };
-  })(this));
-  app.get('/thank-you', (function(_this) {
-    return function(req, res) {
-      return res.render('pages/thank-you');
     };
   })(this));
   username = process.env.AUTH_USERNAME || config.get('auth.username');
   password = process.env.AUTH_PASSWORD || config.get('auth.password');
   auth = basicAuth(username, password);
-  app.get('/dashboard', auth, (function(_this) {
+  app.get('/', auth, (function(_this) {
     return function(req, res) {
       var userIds, users;
+      console.log("GET /dashboard");
       users = slack.getUsers();
       if (users.length === 0) {
         res.render('pages/dashboard');
@@ -45,18 +32,30 @@ routes = function(app, mongo, slack) {
       userIds = users.map(function(user) {
         return user.id;
       });
-      return mongo.getAllUserFeedback(userIds).then(function(statuses) {
+      return mongo.getAllUserFeedback(userIds).then(function(slimUsers) {
         var filteredStatuses;
         filteredStatuses = [];
-        if (statuses.length) {
-          statuses.forEach(function(status) {
-            filteredStatuses[status.id] = status.feedback;
-            filteredStatuses[status.id].date = new Date(status.feedback.timestamp);
-            return filteredStatuses[status.id].statusString = OskarTexts.statusText[status.feedback.status];
+        if (slimUsers.length) {
+          slimUsers.forEach(function(u) {
+            if (u.feedback != null) {
+              filteredStatuses[u.id] = u.feedback;
+              filteredStatuses[u.id].date = new Date(u.feedback.timestamp);
+              return filteredStatuses[u.id].statusString = OskarTexts.statusText[u.feedback.status];
+            }
           });
-          if (statuses.length > 1) {
+          if (users.length > 1) {
             users.sort(function(a, b) {
-              return filteredStatuses[a.id].status > filteredStatuses[b.id].status;
+              if (filteredStatuses[a.id] == null) {
+                if (filteredStatuses[b.id] == null) {
+                  return a.name.toLowerCase() < b.name.toLowerCase();
+                } else {
+                  return 1;
+                }
+              } else if (filteredStatuses[b.id] == null) {
+                return -1;
+              } else {
+                return filteredStatuses[a.id].date < filteredStatuses[b.id].date;
+              }
             });
           }
         }
