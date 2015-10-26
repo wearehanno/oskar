@@ -1,3 +1,5 @@
 node_modules
 config/local.json
 .env
+_site
+.sass-cache
