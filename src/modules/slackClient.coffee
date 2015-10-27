@@ -8,137 +8,137 @@ config         = require 'config'
 
 class SlackClient extends EventEmitter
 
-	@slack = null
-	@mongo = null
+  @slack = null
+  @mongo = null
 
-	constructor: (mongo = null, token = null) ->
-		@token            = process.env.SLACK_TOKEN || config.get('slack.token')
-		@token 						= token || @token
-		@autoReconnect    = true
-		@autoMark         = true
-		@users            = []
-		@channels         = []
-		@channelId 				= process.env.CHANNEL_ID || config.get('slack.channelId')
+  constructor: (mongo = null, token = null) ->
+    @token            = process.env.SLACK_TOKEN || config.get('slack.token')
+    @token            = token || @token
+    @autoReconnect    = true
+    @autoMark         = true
+    @users            = []
+    @channels         = []
+    @channelId        = process.env.CHANNEL_ID || config.get('slack.channelId')
 
-		# parse env vars that have to be arrays
-		@disabledUsers    = if process.env.DISABLED_USERS then JSON.parse "[" + process.env.DISABLED_USERS + "]" else config.get 'slack.disabledUsers'
-		@disabledChannels = if process.env.DISABLED_CHANNELS then JSON.parse "[" + process.env.DISABLED_CHANNELS + "]" else config.get 'slack.disabledChannels'
+    # parse env vars that have to be arrays
+    @disabledUsers    = if process.env.DISABLED_USERS then JSON.parse "[" + process.env.DISABLED_USERS + "]" else config.get 'slack.disabledUsers'
+    @disabledChannels = if process.env.DISABLED_CHANNELS then JSON.parse "[" + process.env.DISABLED_CHANNELS + "]" else config.get 'slack.disabledChannels'
 
-		if mongo? then @mongo = mongo
+    if mongo? then @mongo = mongo
 
-	connect: () ->
-		console.log 'connecting...'
-		@slack = new Slack(@token, @autoReconnect, @autoMark)
+  connect: () ->
+    console.log 'connecting...'
+    @slack = new Slack(@token, @autoReconnect, @autoMark)
 
-		# listen to Slack API events
-		@slack.on 'presenceChange', @presenceChangeHandler
-		@slack.on 'message', @messageHandler
+    # listen to Slack API events
+    @slack.on 'presenceChange', @presenceChangeHandler
+    @slack.on 'message', @messageHandler
 
-		promise = new Promise (resolve, reject) =>
+    promise = new Promise (resolve, reject) =>
 
-			# on open, push available users to array
-			@slack.on 'open', =>
-				for user, attrs of @slack.users when attrs.is_bot is false
-					@users.push attrs
-				resolve @slack
+      # on open, push available users to array
+      @slack.on 'open', =>
+        for user, attrs of @slack.users when attrs.is_bot is false
+          @users.push attrs
+        resolve @slack
 
-			@slack.on 'error', (error) ->
-				reject error
+      @slack.on 'error', (error) ->
+        reject error
 
-			@slack.login()
+      @slack.login()
 
-	getUsers: () ->
-		# ignore slackbot and disabled users
-		users = @users.filter (user) =>
-			return @disabledUsers.indexOf(user.id) is -1
-		return users
+  getUsers: () ->
+    # ignore slackbot and disabled users
+    users = @users.filter (user) =>
+      return @disabledUsers.indexOf(user.id) is -1
+    return users
 
-	getUserIds: () ->
+  getUserIds: () ->
     users = @getUsers().map (user) ->
-    	return user.id
+      return user.id
 
-	getUser: (userId) ->
-		# ignore disabled users
-		if @disabledUsers.indexOf(userId) isnt -1
-			return null
+  getUser: (userId) ->
+    # ignore disabled users
+    if @disabledUsers.indexOf(userId) isnt -1
+      return null
 
-		filteredUsers = (user for user in @users when user.id is userId)
-		filteredUsers[0]
+    filteredUsers = (user for user in @users when user.id is userId)
+    filteredUsers[0]
 
-	setUserPresence: (userId, presence) =>
-		(user.presence = presence) for user in @users when user.id is userId
+  setUserPresence: (userId, presence) =>
+    (user.presence = presence) for user in @users when user.id is userId
 
-	allowUserComment: (userId) ->
-		user = @getUser userId
-		user.allowComment = true
+  allowUserComment: (userId) ->
+    user = @getUser userId
+    user.allowComment = true
 
-	disallowUserComment: (userId) ->
-		user = @getUser userId
-		user.allowComment = false
+  disallowUserComment: (userId) ->
+    user = @getUser userId
+    user.allowComment = false
 
-	isUserCommentAllowed: (userId) ->
-		user = @getUser userId
-		typeof user isnt 'undefined' && typeof user.allowComment isnt 'undefined' && user.allowComment
+  isUserCommentAllowed: (userId) ->
+    user = @getUser userId
+    typeof user isnt 'undefined' && typeof user.allowComment isnt 'undefined' && user.allowComment
 
-	getfeedbackRequestsCount: (userId) ->
-		user = @getUser userId
-		if (typeof user isnt 'undefined' && typeof user.feedbackRequestsCount isnt 'undefined' && user.feedbackRequestsCount)
-			return user.feedbackRequestsCount
-		return 0
+  getfeedbackRequestsCount: (userId) ->
+    user = @getUser userId
+    if (typeof user isnt 'undefined' && typeof user.feedbackRequestsCount isnt 'undefined' && user.feedbackRequestsCount)
+      return user.feedbackRequestsCount
+    return 0
 
-	setfeedbackRequestsCount: (userId, count) ->
-		user = @getUser userId
-		user.feedbackRequestsCount = count
+  setfeedbackRequestsCount: (userId, count) ->
+    user = @getUser userId
+    user.feedbackRequestsCount = count
 
-	presenceChangeHandler: (data, presence) =>
+  presenceChangeHandler: (data, presence) =>
 
-		# when presence changes, set internally and send event
-		data =
-			userId: data.id
-			status: presence
+    # when presence changes, set internally and send event
+    data =
+      userId: data.id
+      status: presence
 
-		@setUserPresence data.userId, presence
+    @setUserPresence data.userId, presence
 
-		@emit 'presence', data
+    @emit 'presence', data
 
-	messageHandler: (message) =>
+  messageHandler: (message) =>
 
-		# if user is bot, return
-		if !message? || (@getUser message.user) is undefined
-			return false
+    # if user is bot, return
+    if !message? || (@getUser message.user) is undefined
+      return false
 
-		# ignore channel that oskar is broadcasting to (otherwise he'd react to every single message in there)
-		if (@channelId && @channelId is message.channel)
-			return false
+    # ignore channel that oskar is broadcasting to (otherwise he'd react to every single message in there)
+    if (@channelId && @channelId is message.channel)
+      return false
 
-		# disable messages from disabled channels
-		if @disabledChannels.indexOf(message.channel) isnt -1
-			return false
+    # disable messages from disabled channels
+    if @disabledChannels.indexOf(message.channel) isnt -1
+      return false
 
-		# send message event
-		message.type = 'input'
-		@emit 'message', message
-		return true
+    # send message event
+    message.type = 'input'
+    @emit 'message', message
+    return true
 
-	# post message to slack
-	postMessage: (userId, message, cb) =>
+  # post message to slack
+  postMessage: (userId, message, cb) =>
 
-		# if channels object already exists
-		if (userId in @channels)
-			return @slack.postMessage @channels[userId].channel.id, message, () ->
-				cb()
+    # if channels object already exists
+    if (userId in @channels)
+      return @slack.postMessage @channels[userId].channel.id, message, () ->
+        cb()
 
-		# otherwise open new one
-		@slack.openDM userId, (res) =>
-			@channels[userId] = res
-			@slack.postMessage res.channel.id, message, () ->
-				if (cb)
-					cb arguments...
+    # otherwise open new one
+    @slack.openDM userId, (res) =>
+      @channels[userId] = res
+      @slack.postMessage res.channel.id, message, () ->
+        if (cb)
+          cb arguments...
 
-	postMessageToChannel: (channelId, message, cb) ->
+  postMessageToChannel: (channelId, message, cb) ->
 
-		@slack.postMessage channelId, message, () ->
-			if (cb)
-				cb arguments...
+    @slack.postMessage channelId, message, () ->
+      if (cb)
+        cb arguments...
 
 module.exports = SlackClient

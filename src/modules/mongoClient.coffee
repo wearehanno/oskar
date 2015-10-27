@@ -4,263 +4,263 @@ config  = require 'config'
 
 class MongoClient
 
-	@db         = null
-	@collection = null
+  @db         = null
+  @collection = null
 
-	constructor: (url) ->
-		if url
-			@url = url
-		else
-			@url = process.env.MONGOLAB_URI || config.get 'mongo.url'
+  constructor: (url) ->
+    if url
+      @url = url
+    else
+      @url = process.env.MONGOLAB_URI || config.get 'mongo.url'
 
-	connect: () ->
+  connect: () ->
 
-		promise = new Promise (resolve, reject) =>
+    promise = new Promise (resolve, reject) =>
 
-			Mongo.connect @url, (err, db) =>
+      Mongo.connect @url, (err, db) =>
 
-				if err is null
-					@collection = db.collection 'users'
-					resolve db
-				else
-					db.close()
-					reject()
+        if err is null
+          @collection = db.collection 'users'
+          resolve db
+        else
+          db.close()
+          reject()
 
-	userExists: (userId) ->
+  userExists: (userId) ->
 
-		promise = new Promise (resolve, reject) =>
+    promise = new Promise (resolve, reject) =>
 
-			@collection.find({ id: userId }).toArray (err, docs) =>
-				resolve docs.length > 0
+      @collection.find({ id: userId }).toArray (err, docs) =>
+        resolve docs.length > 0
 
-	saveUser: (user) ->
+  saveUser: (user) ->
 
-		promise = new Promise (resolve, reject) =>
+    promise = new Promise (resolve, reject) =>
 
-			@userExists(user.id).then (res) =>
+      @userExists(user.id).then (res) =>
 
-				if res is true
-					return resolve user
+        if res is true
+          return resolve user
 
-				userObj =
-					id        : user.id
-					name      : user.name
-					real_name : user.real_name
-					tz        : user.tz
-					tz_offset : user.tz_offset
-					image_48  : user.profile.image_48
+        userObj =
+          id        : user.id
+          name      : user.name
+          real_name : user.real_name
+          tz        : user.tz
+          tz_offset : user.tz_offset
+          image_48  : user.profile.image_48
 
-				@collection.insert userObj, (err, result) ->
-					if err is null
-						resolve result
-					else
-						reject()
+        @collection.insert userObj, (err, result) ->
+          if err is null
+            resolve result
+          else
+            reject()
 
-	saveUserStatus: (userId, status) ->
+  saveUserStatus: (userId, status) ->
 
-		promise = new Promise (resolve, reject) =>
+    promise = new Promise (resolve, reject) =>
 
-			user =
-				id: userId
+      user =
+        id: userId
 
-			update =
-				$push:
-					activity:
-						status: status
-						timestamp: Date.now()
+      update =
+        $push:
+          activity:
+            status: status
+            timestamp: Date.now()
 
-			@collection.update user, update, (err, result) =>
+      @collection.update user, update, (err, result) =>
 
-				if err is null
-					resolve result
-				else
-					reject()
+        if err is null
+          resolve result
+        else
+          reject()
 
-	saveUserFeedback: (userId, feedback) ->
+  saveUserFeedback: (userId, feedback) ->
 
-		promise = new Promise (resolve, reject) =>
+    promise = new Promise (resolve, reject) =>
 
-			user =
-				id: userId
+      user =
+        id: userId
 
-			update =
-				$push:
-					feedback:
-						status: feedback
-						timestamp: Date.now()
+      update =
+        $push:
+          feedback:
+            status: feedback
+            timestamp: Date.now()
 
-			@collection.update user, update, (err, result) =>
+      @collection.update user, update, (err, result) =>
 
-				if err is null
-					resolve result
-				else
-					reject()
+        if err is null
+          resolve result
+        else
+          reject()
 
-	saveUserFeedbackMessage: (userId, feedbackMessage) ->
+  saveUserFeedbackMessage: (userId, feedbackMessage) ->
 
-		promise = new Promise (resolve, reject) =>
+    promise = new Promise (resolve, reject) =>
 
-			@getLatestUserTimestampForProperty('feedback', userId).then (res) =>
+      @getLatestUserTimestampForProperty('feedback', userId).then (res) =>
 
-				find =
-					id: userId
-					feedback:
-						$elemMatch:
-							timestamp: res
+        find =
+          id: userId
+          feedback:
+            $elemMatch:
+              timestamp: res
 
-				update =
-					$set:
-						'feedback.$.message': feedbackMessage
+        update =
+          $set:
+            'feedback.$.message': feedbackMessage
 
-				@collection.update find, update, (err, result) =>
+        @collection.update find, update, (err, result) =>
 
-					if err is null
-						resolve result
-					else
-						reject()
+          if err is null
+            resolve result
+          else
+            reject()
 
-	getUserData: (userId) ->
+  getUserData: (userId) ->
 
-		promise = new Promise (resolve, reject) =>
+    promise = new Promise (resolve, reject) =>
 
-			@collection.find({ id: userId }).toArray (err, docs) =>
+      @collection.find({ id: userId }).toArray (err, docs) =>
 
-				if err is not null
-					return reject()
+        if err is not null
+          return reject()
 
-				if docs.length is 0
-					return resolve false
+        if docs.length is 0
+          return resolve false
 
-				resolve docs[0]
+        resolve docs[0]
 
-	getLatestUserFeedback: (userId) ->
+  getLatestUserFeedback: (userId) ->
 
-		promise = new Promise (resolve, reject) =>
+    promise = new Promise (resolve, reject) =>
 
-			@collection.find({ id: userId }).toArray (err, docs) =>
+      @collection.find({ id: userId }).toArray (err, docs) =>
 
-				if err is not null
-					return reject()
+        if err is not null
+          return reject()
 
-				if docs.length is 0
-					return resolve false
+        if docs.length is 0
+          return resolve false
 
-				if !docs[0].hasOwnProperty 'feedback'
-					return resolve null
+        if !docs[0].hasOwnProperty 'feedback'
+          return resolve null
 
-				timestamp = 0
-				feedback = null
+        timestamp = 0
+        feedback = null
 
-				# get latest message according to timestamp
-				for obj in docs[0].feedback
-					if obj.timestamp > timestamp
-						timestamp = obj.timestamp
-						feedback = obj
+        # get latest message according to timestamp
+        for obj in docs[0].feedback
+          if obj.timestamp > timestamp
+            timestamp = obj.timestamp
+            feedback = obj
 
-				resolve feedback
+        resolve feedback
 
-	getAllUserFeedback: (userIds) ->
+  getAllUserFeedback: (userIds) ->
 
-		promise = new Promise (resolve, reject) =>
+    promise = new Promise (resolve, reject) =>
 
-			@collection.find({ id: { $in: userIds } }).toArray (err, docs) =>
+      @collection.find({ id: { $in: userIds } }).toArray (err, docs) =>
 
-				if err isnt null
-					reject()
+        if err isnt null
+          reject()
 
-				users = docs.map (elem) ->
+        users = docs.map (elem) ->
 
-					feedback = null
+          feedback = null
 
-					if elem.feedback
-						elem.feedback.sort (a, b) ->
-							a.timestamp > b.timestamp
+          if elem.feedback
+            elem.feedback.sort (a, b) ->
+              a.timestamp > b.timestamp
 
-						feedback = elem.feedback.pop()
+            feedback = elem.feedback.pop()
 
-					res =
-						id: elem.id
-						feedback: feedback
+          res =
+            id: elem.id
+            feedback: feedback
 
-				resolve users
+        resolve users
 
-	getUserFeedbackCount: (userId, date) ->
+  getUserFeedbackCount: (userId, date) ->
 
-		promise = new Promise (resolve, reject) =>
+    promise = new Promise (resolve, reject) =>
 
-			@collection.find({ id: userId }).toArray (err, docs) =>
+      @collection.find({ id: userId }).toArray (err, docs) =>
 
-				if err is not null
-					return reject()
+        if err is not null
+          return reject()
 
-				if docs.length is 0
-					return resolve false
+        if docs.length is 0
+          return resolve false
 
-				filtered = []
-				day = date.getDate()
-				month =	date.getMonth()
+        filtered = []
+        day = date.getDate()
+        month = date.getMonth()
 
-				if docs[0].feedback
-					filtered = docs[0].feedback.filter (feedback) ->
-						date = new Date feedback.timestamp
-						return (date.getDate() is day && date.getMonth() is month)
+        if docs[0].feedback
+          filtered = docs[0].feedback.filter (feedback) ->
+            date = new Date feedback.timestamp
+            return (date.getDate() is day && date.getMonth() is month)
 
-					return resolve filtered.length
+          return resolve filtered.length
 
-				resolve(0)
+        resolve(0)
 
-	getLatestUserTimestampForProperty: (property, userId) ->
+  getLatestUserTimestampForProperty: (property, userId) ->
 
-		promise = new Promise (resolve, reject) =>
+    promise = new Promise (resolve, reject) =>
 
-			@collection.find({ id: userId }).toArray (err, docs) =>
+      @collection.find({ id: userId }).toArray (err, docs) =>
 
-				if err is not null
-					return reject()
+        if err is not null
+          return reject()
 
-				if docs.length is 0
-					return resolve false
+        if docs.length is 0
+          return resolve false
 
-				if !docs[0].hasOwnProperty property
-					return resolve null
+        if !docs[0].hasOwnProperty property
+          return resolve null
 
-				docs[0][property].sort (a, b) ->
-					a.timestamp > b.timestamp
+        docs[0][property].sort (a, b) ->
+          a.timestamp > b.timestamp
 
-				resolve docs[0][property].pop().timestamp
+        resolve docs[0][property].pop().timestamp
 
-	getOnboardingStatus: (userId) ->
+  getOnboardingStatus: (userId) ->
 
-		promise = new Promise (resolve, reject) =>
+    promise = new Promise (resolve, reject) =>
 
-			@collection.find({ id: userId }).toArray (err, docs) =>
+      @collection.find({ id: userId }).toArray (err, docs) =>
 
-				if err is not null
-					return reject()
+        if err is not null
+          return reject()
 
-				if docs.length is 0
-					return resolve false
+        if docs.length is 0
+          return resolve false
 
-				if !docs[0].hasOwnProperty 'onboarding'
-					return resolve 0
+        if !docs[0].hasOwnProperty 'onboarding'
+          return resolve 0
 
-				resolve docs[0].onboarding
+        resolve docs[0].onboarding
 
-	setOnboardingStatus: (userId, status) ->
+  setOnboardingStatus: (userId, status) ->
 
-		promise = new Promise (resolve, reject) =>
+    promise = new Promise (resolve, reject) =>
 
-				find =
-					id: userId
+        find =
+          id: userId
 
-				update =
-					$set:
-						'onboarding': status
+        update =
+          $set:
+            'onboarding': status
 
-				@collection.update find, update, (err, result) =>
-					if err is null
-						resolve result
-					else
-						reject()
+        @collection.update find, update, (err, result) =>
+          if err is null
+            resolve result
+          else
+            reject()
 
 module.exports = MongoClient
