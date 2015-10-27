@@ -74,6 +74,8 @@ See the following instructions if you set up Oskar for the first time.
 * [Foreman](https://github.com/ddollar/foreman)
 * MongoDB: Full instructions are [here](http://docs.mongodb.org/manual/installation/):
 
+You might find this helpful, if you're setting up MongoDB for the first time:
+
     $ brew install mongodb
     # Create a data folder to store MongoDB databases, then set up the permissions for it
     $ sudo mkdir -p /data/db
@@ -81,8 +83,13 @@ See the following instructions if you set up Oskar for the first time.
 
 ###Run the app
 
-    $ mongod # will start MongoDB on port 27071 and initialise the database
+    # will start MongoDB on port 27071 and initialise the database
+    $ mongod
+    
+    # Install the dependencies
     $ npm install
+    
+    # Start the app using Heroku Foreman
     $ foreman start web
 
 You can then view the app at [http://localhost:5000](http://localhost:5000)
