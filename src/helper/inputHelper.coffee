@@ -20,7 +20,7 @@ class InputHelper
     return false
 
   @isStatusAndFeedback: (input) ->
-    messagePattern = /^(\d):\s*([\w\s\:]+)/i
+    messagePattern = /^(\d):\s*([\w\s\:\.,-]+)/i
     matches = input.match messagePattern
     if matches is null
       return false
