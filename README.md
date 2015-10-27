@@ -84,7 +84,6 @@ After making sure that MongoDB is running on port 27071, build the app as follow
 - Download and install nodeJS: https://nodejs.org/download/
 - Install Grunt: `npm install grunt -g`
 - Run `npm install` to install dependencies
-- Run `grunt prepublish` to build the app: this copies the source files over to the `target` folder and compiles CoffeeScript to JavaScript
 - Start the local app using Heroku Foreman, with: `foreman start web`
 - You can reach the site at http://localhost:5000
 - Compile & watch CoffeeScript and SASS files using `grunt watch`
