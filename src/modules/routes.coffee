@@ -39,9 +39,10 @@ routes = (app, mongo, slack) ->
     # read users status
     mongo.getAllUserFeedback(userIds).then (statuses) =>
 
-      console.log statuses
-
       filteredStatuses = []
+
+      # set to false if at least one user doesn't have a status
+      isSortingPossible = true
 
       if statuses.length
         statuses.forEach (status) ->
@@ -49,12 +50,14 @@ routes = (app, mongo, slack) ->
             filteredStatuses[status.id]              = status.feedback
             filteredStatuses[status.id].date         = new Date status.feedback.timestamp
             filteredStatuses[status.id].statusString = OskarTexts.statusText[status.feedback.status]
+          else
+            isSortingPossible = false
 
-        # only sort when more than one user
-        # if statuses.length > 1
-        #   if users[0].status
-        #     users.sort (a, b) ->
-        #       return filteredStatuses[a.id].status > filteredStatuses[b.id].status
+        # only sort when more than one user and sorting is possible
+        if statuses.length > 1 and isSortingPossible
+          if users[0].status
+            users.sort (a, b) ->
+              return filteredStatuses[a.id].status > filteredStatuses[b.id].status
 
       res.render('pages/dashboard', { users: users, statuses: filteredStatuses })
 
