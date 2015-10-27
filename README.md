@@ -70,8 +70,8 @@ See the following instructions if you set up Oskar for the first time.
 
 ###Prerequisites:
 
-* [Node.js](https://nodejs.org/download/): 
-* [Foreman](https://github.com/ddollar/foreman)
+* [Node.js](https://nodejs.org/download/):
+* [Heroku Toolbelt](https://toolbelt.heroku.com/) so that we can use [Heroku Local](https://devcenter.heroku.com/articles/heroku-local)
 * MongoDB: Full instructions are [here](http://docs.mongodb.org/manual/installation/):
 
 You might find this helpful, if you're setting up MongoDB for the first time:
@@ -87,12 +87,12 @@ You might find this helpful, if you're setting up MongoDB for the first time:
 
     # will start MongoDB on port 27071 and initialise the database
     $ mongod
-    
+
     # Install the dependencies
     $ npm install
-    
-    # Start the app using Heroku Foreman
-    $ foreman start web
+
+    # Start the app using Heroku Local
+    $ heroku local
 
 You can then view the app at [http://localhost:5000](http://localhost:5000)
 
