@@ -4,8 +4,7 @@
   "description": "A satisfaction coach bot for Slack",
   "main": "./oskar",
   "scripts": {
-    "test": "mocha --compilers coffee:coffee-script/register --reporter spec",
-    "prepublish": "grunt prepublish"
+    "test": "mocha --compilers coffee:coffee-script/register --reporter spec"
   },
   "keywords": [
     "slack"
@@ -38,14 +37,6 @@
     "ws": "0.4.31"
   },
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-coffee": "^0.12.0",
-    "grunt-contrib-copy": "^0.8.0",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-env": "^0.4.4",
-    "grunt-release": "~0.6.0",
-    "grunt-sass": "^1.0.0",
-    "grunt-shell": "~0.5.0",
     "mocha": "~1.13.0",
     "should": "~2.0.2",
     "sinon": "^1.14.1",
