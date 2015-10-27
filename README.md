@@ -25,9 +25,9 @@ You can send the following commands directly as a chat message to Oskar:
 - `How is @channel?` - Returns the current status for the whole group
 
 All data is collected in a database and made visible via the dashboard, which can be found at the URL:
-`http://your-oskar-url.com/dashboard` (find instruction on how to set a username/password below)
+`http://your-oskar-url.com`.  If you're hosting on Heroku, this URL is going to be something like _http://myherokuappname.herokuapp.com_.
 
-If you're hosting on Heroku, then this URL is going to be something like _http://myherokuappname.herokuapp.com/dashboard_.
+_Find instructions on how to set a username/password for your team metrics, below._
 
 # The App
 

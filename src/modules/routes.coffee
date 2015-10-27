@@ -7,31 +7,19 @@ jsonParser   = bodyParser.json()
 
 routes = (app, mongo, slack) ->
 
-  app.get '/', (req, res) =>
-    res.render 'pages/index'
-
-  app.get '/faq', (req, res) =>
-    res.render 'pages/faq'
-
-  app.get '/signup', (req, res) =>
-    res.render 'pages/signup'
-
-  app.get '/thank-you', (req, res) =>
-    res.render 'pages/thank-you'
-
   # protect dashboard from external access
   username = process.env.AUTH_USERNAME || config.get 'auth.username'
   password = process.env.AUTH_PASSWORD || config.get 'auth.password'
   auth = basicAuth username, password
 
   # dashboard
-  app.get '/dashboard', auth, (req, res) =>
+  app.get '/', auth, (req, res) =>
 
     # read users
     users = slack.getUsers()
 
     if users.length is 0
-      res.render('pages/dashboard')
+      res.render('pages/index')
 
     userIds = users.map (user) ->
       return user.id
@@ -52,7 +40,13 @@ routes = (app, mongo, slack) ->
           users.sort (a, b) ->
             filteredStatuses[a.id].status > filteredStatuses[b.id].status
 
-      res.render('pages/dashboard', { users: users, statuses: filteredStatuses })
+      res.render('pages/index', { users: users, statuses: filteredStatuses })
+
+  app.get '/signup', (req, res) =>
+    res.render 'pages/signup'
+
+  app.get '/thank-you', (req, res) =>
+    res.render 'pages/thank-you'
 
   # user status
   app.get '/status/:userId', (req, res) =>

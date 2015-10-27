@@ -5,7 +5,7 @@
   "website": "http://oskar.hanno.co/",
   "logo": "http://oskar.hanno.co/public/images/oskar-avatar-128.png",
   "keywords": ["slack", "command", "bot", "happiness"],
-  "success_url": "/dashboard",
+  "success_url": "/",
   "addons": ["mongolab"],
   "env": {
     "SLACK_TOKEN": {
@@ -25,11 +25,11 @@
       "required": false
     },
     "AUTH_USERNAME": {
-      "description": "Optional: Simple HTTP auth for the dashboard. Make sure to share those with your team",
+      "description": "Optional: Simple HTTP auth for the dashboard. Make sure to share this with your team",
       "required": false
     },
     "AUTH_PASSWORD": {
-      "description": "Optional: Simple HTTP auth for the dashboard. Make sure to share those with your team",
+      "description": "Optional: Simple HTTP auth for the dashboard. Make sure to share this with your team",
       "required": false
     }
   }
