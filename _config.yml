@@ -3,7 +3,7 @@ title: Oskar - By Hanno
 email: hello@hanno.co
 description: "Oskar helps you to keep your team connected and happy, remotely!"
 baseurl: "" # the subpath of your site, e.g. /blog/
-url: "http://wearehanno.github.io/oskar" # the base hostname & protocol for your site
+url: "http://oskar.hanno.co" # the base hostname & protocol for your site
 
 # Build settings
 markdown: kramdown
