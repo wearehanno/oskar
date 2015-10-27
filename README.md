@@ -68,23 +68,31 @@ See the following instructions if you set up Oskar for the first time.
 
 ## Local environment quickstart
 
-First, we need to install MongoDB if you don't have it running already. Full instructions are [here](http://docs.mongodb.org/manual/installation/):
+###Prerequisites:
+
+* [Node.js](https://nodejs.org/download/): 
+* [Foreman](https://github.com/ddollar/foreman)
+* MongoDB: Full instructions are [here](http://docs.mongodb.org/manual/installation/):
+
+You might find this helpful, if you're setting up MongoDB for the first time:
 
     $ brew install mongodb
-    # Create a data folder to store MongoDB databases
+    # Create a data folder to store MongoDB databases, then set up the permissions for it
     $ sudo mkdir -p /data/db
     $ sudo chown $USER /data/db
 
-Now we're running, we can initialise the database:
+###Run the app
 
+    # will start MongoDB on port 27071 and initialise the database
     $ mongod
+    
+    # Install the dependencies
+    $ npm install
+    
+    # Start the app using Heroku Foreman
+    $ foreman start web
 
-After making sure that MongoDB is running on port 27071, build the app as follows:
-
-- Download and install nodeJS: https://nodejs.org/download/
-- Run `npm install` to install dependencies
-- Start the local app using Heroku Foreman, with: `foreman start web`
-- You can reach the site at http://localhost:5000
+You can then view the app at [http://localhost:5000](http://localhost:5000)
 
 ## Unit tests
 
