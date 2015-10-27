@@ -76,6 +76,8 @@ See the following instructions if you set up Oskar for the first time.
 
 You might find this helpful, if you're setting up MongoDB for the first time:
 
+    # Update the homebrew package database
+    $ brew update
     $ brew install mongodb
     # Create a data folder to store MongoDB databases, then set up the permissions for it
     $ sudo mkdir -p /data/db
