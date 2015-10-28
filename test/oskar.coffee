@@ -253,7 +253,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal false
           done()
-        , 500
+        , 1
 
       it 'should not request user feedback if user has left feedback twice', (done) ->
 
@@ -275,7 +275,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal false
           done()
-        , 600
+        , 1
 
 
   ###################################################################
