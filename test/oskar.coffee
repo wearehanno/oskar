@@ -109,7 +109,7 @@ describe 'oskar', ->
       setTimeout ->
         saveUserStub.called.should.be.equal true
         done()
-      , 100
+      , 1
 
     it 'should return false if user is disabled', ->
       data =
@@ -170,7 +170,7 @@ describe 'oskar', ->
           composeMessageStub.args[0][0].should.be.equal 'user1'
           composeMessageStub.args[0][1].should.be.equal 'requestFeedback'
           done()
-        , 100
+        , 1
 
       it 'should request feedback according to request count', (done) ->
 
@@ -187,7 +187,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.args[0][2].should.be.equal 1
           done()
-        , 100
+        , 1
 
       it 'should request feedback according to request count (second time)', (done) ->
 
@@ -214,7 +214,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal false
           done()
-        , 100
+        , 200
 
       it 'should request feedback from an existing user if timestamp has expired', (done) ->
 
@@ -224,7 +224,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal true
           done()
-        , 100
+        , 300
 
       it 'should not request feedback from an existing user if status is not active or triggered', (done) ->
 
@@ -236,7 +236,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal false
           done()
-        , 100
+        , 400
 
       it 'should not request user feedback if user isn\'t active', (done) ->
 
@@ -253,7 +253,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal false
           done()
-        , 100
+        , 500
 
       it 'should not request user feedback if user has left feedback twice', (done) ->
 
@@ -275,7 +275,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal false
           done()
-        , 100
+        , 600
 
 
   ###################################################################
@@ -317,7 +317,7 @@ describe 'oskar', ->
         composeMessageStub.args[0][2].status.should.be.equal res.status
         composeMessageStub.args[0][2].message.should.be.equal res.message
         done()
-      , 100
+      , 1
 
     it 'should reveal status for the channel', (done) ->
 
@@ -347,7 +347,7 @@ describe 'oskar', ->
         composeMessageStub.args[0][1].should.be.equal 'revealChannelStatus'
         composeMessageStub.args[0][2].should.be.equal res
         done()
-      , 100
+      , 1
 
     it 'should not allow feedback if already submitted', (done) ->
 
@@ -365,7 +365,7 @@ describe 'oskar', ->
         composeMessageStub.args[0][0].should.be.equal message.user
         composeMessageStub.args[0][1].should.be.equal 'alreadySubmitted'
         done()
-      , 100
+      , 1
 
     it 'should not allow invalid feedback', (done) ->
 
@@ -382,7 +382,7 @@ describe 'oskar', ->
         composeMessageStub.args[0][0].should.be.equal message.user
         composeMessageStub.args[0][1].should.be.equal 'invalidInput'
         done()
-      , 100
+      , 1
 
     it 'should ask user for feedback message if feedback low', (done) ->
 
@@ -399,7 +399,7 @@ describe 'oskar', ->
         composeMessageStub.args[0][0].should.be.equal message.user
         composeMessageStub.args[0][1].should.be.equal 'lowFeedback'
         done()
-      , 100
+      , 1
 
     it 'should ask user for feedback message if feedback is high', (done) ->
 
@@ -416,7 +416,7 @@ describe 'oskar', ->
         composeMessageStub.args[0][0].should.be.equal message.user
         composeMessageStub.args[0][1].should.be.equal 'highFeedback'
         done()
-      , 100
+      , 1
 
     it 'should thank the user for feedback message if feedback allowed, save feedback to mongo and disallow comment', (done) ->
 
@@ -433,7 +433,7 @@ describe 'oskar', ->
         saveUserFeedbackMessageStub.called.should.be.equal true
         disallowUserCommentStub.called.should.be.equal true
         done()
-      , 100
+      , 1
 
     it 'should allow user to send status and feedback message in one', (done) ->
 
@@ -449,7 +449,7 @@ describe 'oskar', ->
         saveUserFeedbackStub.called.should.be.equal true
         saveUserFeedbackMessageStub.called.should.be.equal true
         done()
-      , 100
+      , 1
 
 
     it 'should return a faq message when user asks for help', (done) ->
@@ -465,7 +465,7 @@ describe 'oskar', ->
         composeMessageStub.args[0][0].should.be.equal message.user
         composeMessageStub.args[0][1].should.be.equal 'faq'
         done()
-      , 100
+      , 1
 
 
     it 'should trigger a presence event for each user', ->
@@ -500,7 +500,7 @@ describe 'oskar', ->
         broadcastUserStatusSpy.args[0][2].should.be.equal message.text
         broadcastUserStatusSpy.called.should.be.equal true
         done()
-      , 100
+      , 1
 
     it 'should send a message to the whole team excluding user that submitted feedback', ->
 
@@ -557,7 +557,7 @@ describe 'oskar', ->
       setTimeout ->
         welcomeStub.called.should.be.equal true
         done()
-      , 100
+      , 1
 
     it 'should call advance message of onboarding helper when user is not onboarded', ->
       data =
@@ -712,4 +712,4 @@ describe 'oskar', ->
           setTimeout ->
             postMessageStub.called.should.be.equal true
             done()
-          , 100
+          , 1
