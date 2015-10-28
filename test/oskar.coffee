@@ -214,7 +214,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal false
           done()
-        , 200
+        , 1
 
       it 'should request feedback from an existing user if timestamp has expired', (done) ->
 
@@ -224,7 +224,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal true
           done()
-        , 300
+        , 1
 
       it 'should not request feedback from an existing user if status is not active or triggered', (done) ->
 
@@ -236,7 +236,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal false
           done()
-        , 400
+        , 1
 
       it 'should not request user feedback if user isn\'t active', (done) ->
 
