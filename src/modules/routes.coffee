@@ -49,12 +49,6 @@ routes = (app, mongo, slack) ->
 
       res.render('pages/index', { users: users, statuses: filteredStatuses })
 
-  app.get '/signup', (req, res) =>
-    res.render 'pages/signup'
-
-  app.get '/thank-you', (req, res) =>
-    res.render 'pages/thank-you'
-
   # user status
   app.get '/status/:userId', (req, res) =>
     mongo.getUserData(req.params.userId).then (data) =>
@@ -75,5 +69,8 @@ routes = (app, mongo, slack) ->
       return res.status(400).send({ status: 'fail' })
     slack.postMessage req.params.userId, req.body.message
     res.json( { status: 'ok' } )
+
+  app.get '/login', (req, res) =>
+
 
 module.exports = routes
