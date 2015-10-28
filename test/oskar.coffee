@@ -214,7 +214,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal false
           done()
-        , 100
+        , 1
 
       it 'should request feedback from an existing user if timestamp has expired', (done) ->
 
