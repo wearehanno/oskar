@@ -170,7 +170,7 @@ describe 'oskar', ->
           composeMessageStub.args[0][0].should.be.equal 'user1'
           composeMessageStub.args[0][1].should.be.equal 'requestFeedback'
           done()
-        , 1
+        , 100
 
       it 'should request feedback according to request count', (done) ->
 
@@ -204,7 +204,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.args[0][2].should.be.equal 2
           done()
-        , 100
+        , 1
 
       it 'should not request feedback from an existing user if timestamp has not expired', (done) ->
 
@@ -214,7 +214,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal false
           done()
-        , 1
+        , 100
 
       it 'should request feedback from an existing user if timestamp has expired', (done) ->
 
@@ -224,7 +224,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal true
           done()
-        , 1
+        , 100
 
       it 'should not request feedback from an existing user if status is not active or triggered', (done) ->
 
@@ -236,7 +236,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal false
           done()
-        , 1
+        , 100
 
       it 'should not request user feedback if user isn\'t active', (done) ->
 
@@ -253,7 +253,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal false
           done()
-        , 1
+        , 100
 
       it 'should not request user feedback if user has left feedback twice', (done) ->
 
@@ -275,7 +275,7 @@ describe 'oskar', ->
         setTimeout ->
           composeMessageStub.called.should.be.equal false
           done()
-        , 1
+        , 100
 
 
   ###################################################################
