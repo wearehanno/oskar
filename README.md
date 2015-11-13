@@ -8,6 +8,8 @@ Oskar is a Slackbot that tracks satisfaction of your team members. Every day it 
 
 Everyone on your team can ask Oskar for another team member's or the entire team's current status. It is not meant to be a way of comparing people but to surface issues, unblock each other and eliminate isolation (especially in remote teams).
 
+_Please keep in mind that Oskar isn't a full-time project of ours. We do use him internally, so there's definitely an incentive for us to fix bugs fast, but since we are a frontend-focused team, rather than an engineering one, it can sometimes take a little while for us to find the time and resources to get bugs fixed up. Thanks for understanding!_
+
 ## Installing him on Heroku
 
 You can deploy your own copy to Heroku with one click using this button:
