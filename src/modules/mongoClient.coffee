@@ -23,7 +23,7 @@ class MongoClient
           db.close()
           reject()
 
-  userExists: (userId) ->
+  userExists: (userId) =>
     promise = new Promise (resolve, reject) =>
       @collection.find({ id: userId }).toArray (err, docs) =>
         resolve docs.length > 0
@@ -31,6 +31,8 @@ class MongoClient
   saveUser: (user) ->
     promise = new Promise (resolve, reject) =>
       @userExists(user.id).then (res) =>
+
+        console.log res
 
         if res
           return resolve user

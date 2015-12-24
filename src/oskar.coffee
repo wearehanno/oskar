@@ -67,7 +67,6 @@ class Oskar
       @slack.disallowUserFeedbackMessage data.userId
 
     # if presence is not active, return
-    user = @slack.getUser data.userId
     if (user and user.presence isnt 'active')
       return
 
@@ -215,6 +214,7 @@ class Oskar
     user = @slack.getUser userId
 
     # compose user details
+    user.profile = user.profile || {}
     userStatus =
       name       : user.profile.first_name || user.name
       status     : status
