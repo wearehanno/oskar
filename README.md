@@ -8,6 +8,8 @@ Oskar is a Slackbot that tracks satisfaction of your team members. Every day it 
 
 Everyone on your team can ask Oskar for another team member's or the entire team's current status. It is not meant to be a way of comparing people but to surface issues, unblock each other and eliminate isolation (especially in remote teams).
 
+_Please keep in mind that Oskar isn't a full-time project of ours. We do use him internally, so there's definitely an incentive for us to fix bugs fast, but since we are a frontend-focused team, rather than an engineering one, it can sometimes take a little while for us to find the time and resources to get bugs fixed up. Thanks for understanding!_
+
 ## Installing him on Heroku
 
 You can deploy your own copy to Heroku with one click using this button:
@@ -70,8 +72,8 @@ See the following instructions if you set up Oskar for the first time.
 
 ###Prerequisites:
 
-* [Node.js](https://nodejs.org/download/): 
-* [Foreman](https://github.com/ddollar/foreman)
+* [Node.js](https://nodejs.org/download/):
+* [Heroku Toolbelt](https://toolbelt.heroku.com/) so that we can use [Heroku Local](https://devcenter.heroku.com/articles/heroku-local)
 * MongoDB: Full instructions are [here](http://docs.mongodb.org/manual/installation/):
 
 You might find this helpful, if you're setting up MongoDB for the first time:
@@ -87,12 +89,12 @@ You might find this helpful, if you're setting up MongoDB for the first time:
 
     # will start MongoDB on port 27071 and initialise the database
     $ mongod
-    
+
     # Install the dependencies
     $ npm install
-    
-    # Start the app using Heroku Foreman
-    $ foreman start web
+
+    # Start the app using Heroku Local
+    $ heroku local
 
 You can then view the app at [http://localhost:5000](http://localhost:5000)
 
