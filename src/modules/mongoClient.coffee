@@ -8,17 +8,14 @@ class MongoClient
   @collection = null
 
   constructor: (url) ->
-    if url
-      @url = url
-    else
+    if !url
       @url = process.env.MONGOLAB_URI || config.get 'mongo.url'
+      return
+    @url = url
 
   connect: () ->
-
     promise = new Promise (resolve, reject) =>
-
       Mongo.connect @url, (err, db) =>
-
         if err is null
           @collection = db.collection 'users'
           resolve db
@@ -27,16 +24,12 @@ class MongoClient
           reject()
 
   userExists: (userId) ->
-
     promise = new Promise (resolve, reject) =>
-
       @collection.find({ id: userId }).toArray (err, docs) =>
         resolve docs.length > 0
 
   saveUser: (user) ->
-
     promise = new Promise (resolve, reject) =>
-
       @userExists(user.id).then (res) =>
 
         if res is true
@@ -57,7 +50,6 @@ class MongoClient
             reject()
 
   saveUserStatus: (userId, status) ->
-
     promise = new Promise (resolve, reject) =>
 
       user =
@@ -70,14 +62,11 @@ class MongoClient
             timestamp: Date.now()
 
       @collection.update user, update, (err, result) =>
-
-        if err is null
-          resolve result
-        else
-          reject()
+        if err isnt null
+          return reject()
+        resolve result
 
   saveUserFeedback: (userId, feedback) ->
-
     promise = new Promise (resolve, reject) =>
 
       user =
@@ -90,16 +79,12 @@ class MongoClient
             timestamp: Date.now()
 
       @collection.update user, update, (err, result) =>
-
-        if err is null
-          resolve result
-        else
-          reject()
+        if err isnt null
+          return reject()
+        resolve result
 
   saveUserFeedbackMessage: (userId, feedbackMessage) ->
-
     promise = new Promise (resolve, reject) =>
-
       @getLatestUserTimestampForProperty('feedback', userId).then (res) =>
 
         find =
@@ -113,19 +98,15 @@ class MongoClient
             'feedback.$.message': feedbackMessage
 
         @collection.update find, update, (err, result) =>
-
-          if err is null
-            resolve result
-          else
-            reject()
+          if err isnt null
+            return reject()
+          resolve result
 
   getUserData: (userId) ->
-
     promise = new Promise (resolve, reject) =>
-
       @collection.find({ id: userId }).toArray (err, docs) =>
 
-        if err is not null
+        if err isnt null
           return reject()
 
         if docs.length is 0
@@ -134,12 +115,10 @@ class MongoClient
         resolve docs[0]
 
   getLatestUserFeedback: (userId) ->
-
     promise = new Promise (resolve, reject) =>
-
       @collection.find({ id: userId }).toArray (err, docs) =>
 
-        if err is not null
+        if err isnt null
           return reject()
 
         if docs.length is 0
@@ -160,22 +139,17 @@ class MongoClient
         resolve feedback
 
   getAllUserFeedback: (userIds) ->
-
     promise = new Promise (resolve, reject) =>
-
       @collection.find({ id: { $in: userIds } }).toArray (err, docs) =>
 
         if err isnt null
           reject()
 
         users = docs.map (elem) ->
-
           feedback = null
-
           if elem.feedback
             elem.feedback.sort (a, b) ->
               a.timestamp > b.timestamp
-
             feedback = elem.feedback.pop()
 
           res =
@@ -185,12 +159,10 @@ class MongoClient
         resolve users
 
   getUserFeedbackCount: (userId, date) ->
-
     promise = new Promise (resolve, reject) =>
-
       @collection.find({ id: userId }).toArray (err, docs) =>
 
-        if err is not null
+        if err isnt null
           return reject()
 
         if docs.length is 0
@@ -204,15 +176,12 @@ class MongoClient
           filtered = docs[0].feedback.filter (feedback) ->
             date = new Date feedback.timestamp
             return (date.getDate() is day && date.getMonth() is month)
-
           return resolve filtered.length
 
         resolve(0)
 
   getLatestUserTimestampForProperty: (property, userId) ->
-
     promise = new Promise (resolve, reject) =>
-
       @collection.find({ id: userId }).toArray (err, docs) =>
 
         if err is not null
@@ -230,9 +199,7 @@ class MongoClient
         resolve docs[0][property].pop().timestamp
 
   getOnboardingStatus: (userId) ->
-
     promise = new Promise (resolve, reject) =>
-
       @collection.find({ id: userId }).toArray (err, docs) =>
 
         if err is not null
@@ -247,7 +214,6 @@ class MongoClient
         resolve docs[0].onboarding
 
   setOnboardingStatus: (userId, status) ->
-
     promise = new Promise (resolve, reject) =>
 
         find =

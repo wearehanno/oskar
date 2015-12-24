@@ -62,25 +62,19 @@ describe 'MongoClient', ->
         # empty database
         collection.remove({})
 
-    it 'should save a new user to the db', (done) ->
+        # save user 1
+        mongoClient.saveUser(users[0]).then (res) ->
+          console.log 'user 1 saved'
+
+        # save user 2
+        mongoClient.saveUser(users[1]).then (res) ->
+          console.log 'user 2 saved'
+
+    it 'should not save the same user twice', (done) ->
       mongoClient.saveUser(users[0]).then (res) ->
         collection.find({ id: users[0].id }).toArray (err, docs) ->
           docs.length.should.be.equal 1
           done()
-
-    it 'should not save a user twice', (done) ->
-      mongoClient.saveUser(users[0]).then (res) ->
-        mongoClient.saveUser(users[0]).then (res) ->
-          collection.find({ id: users[0].id }).toArray (err, docs) ->
-            docs.length.should.be.equal 1
-            done()
-
-    it 'should retain users', (done) ->
-      mongoClient.saveUser(users[0]).then (res) ->
-        mongoClient.saveUser(users[1]).then (res) ->
-          collection.find({ id: users[0].id }).toArray (err, docs) ->
-            docs.length.should.be.equal 1
-            done()
 
   describe 'MongoClientStatus', ->
 
@@ -90,121 +84,99 @@ describe 'MongoClient', ->
           docs[0].should.have.property 'activity'
           done()
 
-    it 'should save multiple user statuses in user object', (done) ->
-      mongoClient.saveUserStatus(users[0].id, 'away').then (res) ->
-        collection.find({ id: users[0].id }).toArray (err, docs) ->
-          docs[0].activity.length.should.be.equal 2
-          done()
-
-    it 'should get the last status for a user', (done) ->
-      mongoClient.getLatestUserTimestampForProperty('activity', users[0].id).then (res) ->
-        collection.find({ id: users[0].id }).toArray (err, docs) ->
-
-          timestamp = 0
-
-          # get highest timestamp
-          for activity in docs[0].activity
-            timestamp = activity.timestamp if activity.timestamp > timestamp
-
-          res.should.be.equal timestamp
-          done()
-
   describe 'MongoClientActivity', ->
+
+    before ->
+      # save user 2 to db
+      mongoClient.saveUser(users[1]).then (res) ->
 
     it 'should return null if user has no activity', (done) ->
       mongoClient.getLatestUserTimestampForProperty('activity', 'user2').then (res) ->
         should(res).be.exactly null
         done()
 
-    it 'should return null if user doesnt exist yet', (done) ->
+    it 'should return false if user doesnt exist yet', (done) ->
       mongoClient.getLatestUserTimestampForProperty('activity', 'U0281LQKQ').then (res) ->
         should(res).be.exactly false
         done()
 
+    it 'should get the latest timestamp for passed property', (done) ->
+      mongoClient.getLatestUserTimestampForProperty('activity', users[0].id).then (res) ->
+        collection.find({ id: users[0].id }).toArray (err, docs) ->
+
+          # get highest timestamp
+          timestamp = 0
+          for activity in docs[0].activity
+            timestamp = activity.timestamp if activity.timestamp > timestamp
+
+          res.should.be.equal timestamp
+          done()
+
   describe 'MongoClientFeedback', ->
 
-    it 'should save user feedback', (done) ->
-      userId   = 'user2'
-      feedback = 4
+    userId   = 'user2'
+    feedback = 4
+    feedbackMessage = 'This is my user feedback message'
+
+    before ->
 
       mongoClient.saveUserFeedback(userId, feedback).then (res) ->
-        collection.find({ id: userId }).toArray (err, docs) ->
-          should(docs[0].feedback[0].status).be.equal feedback
-          done()
+        console.log "save user feedback message for #{userId}"
+        mongoClient.saveUserFeedbackMessage(userId, feedbackMessage).then (res) ->
+          console.log "save user feedback for #{userId}"
 
-    it 'should save a user feedback for the last feedback entry', (done) ->
-      userId          = 'user2'
-      feedbackMessage = 'This is my user feedback message'
+    it 'should save user feedback', (done) ->
 
-      mongoClient.saveUserFeedbackMessage(userId, feedbackMessage).then (res) ->
-        collection.find({ id: userId }).toArray (err, docs) ->
-          should(docs[0].feedback[0].message).be.equal feedbackMessage
-          done()
+      collection.find({ id: userId }).toArray (err, docs) ->
+        should(docs[0].feedback[0].status).be.equal feedback
+        done()
+
+    it 'should save a user feedback message for the last feedback entry', (done) ->
+
+      collection.find({ id: userId }).toArray (err, docs) ->
+        should(docs[0].feedback[0].message).be.equal feedbackMessage
+        done()
 
     it 'should get the latest user feedback', (done) ->
-      userId          = 'user2'
-      feedback        = 5
-      feedbackMessage = 'Another feedback message'
 
-      mongoClient.saveUserFeedback(userId, feedback).then (res) ->
-        mongoClient.saveUserFeedbackMessage(userId, feedbackMessage).then (res) ->
-          mongoClient.getLatestUserFeedback(userId).then (res) ->
-            res.status.should.be.equal 5
-            res.message.should.be.equal 'Another feedback message'
-            done()
+      mongoClient.getLatestUserFeedback(userId).then (res) ->
+        res.status.should.be.equal 4
+        res.message.should.be.equal 'This is my user feedback message'
+        done()
 
     it 'should return feedback for all users', (done) ->
-      userId   = 'user1'
-      feedback = 6
 
-      userIds = ['user1', 'user2']
       mongoClient.saveUserFeedback(userId, feedback).then (res) =>
-        mongoClient.getAllUserFeedback(userIds).then (res) =>
+        mongoClient.getAllUserFeedback(['user1', 'user2']).then (res) =>
 
           res[0].should.have.property 'id'
           res[1].should.have.property 'id'
-
-          res[0].should.have.property 'feedback'
           res[1].should.have.property 'feedback'
-
-          res[0].feedback.should.have.property 'status'
           res[1].feedback.should.have.property 'status'
-
-          res[0].feedback.should.have.property 'timestamp'
           res[1].feedback.should.have.property 'timestamp'
 
           done()
 
     it 'should return how many times user has given feedback', (done) ->
-      userId   = 'user1'
-      feedback = 4
 
       today = new Date()
-      mongoClient.saveUserFeedback(userId, feedback).then (res) =>
-        mongoClient.getUserFeedbackCount(userId, today).then (res) =>
-          res.should.be.equal 2
-          done()
+      mongoClient.getUserFeedbackCount(userId, today).then (res) =>
+        console.log res
+        res.should.be.equal 2
+        done()
 
   describe 'MongoClientOnboardingStatus', ->
 
-    it 'should return the current onboarding status 0 for the user if no status has been saved before', (done) ->
+    userId = 'user1'
 
-      userId = 'user1'
+    it 'should return the current onboarding status 0 if no status has been saved', (done) ->
+
       mongoClient.getOnboardingStatus(userId).then (res) ->
         res.should.be.equal 0
         done()
 
-    it 'should save the onboarding status for the user', (done) ->
+    it 'should save onboarding status', (done) ->
 
-      userId = 'user1'
-      mongoClient.setOnboardingStatus(userId).then (res) =>
-
-        res.should.have.property 'result'
-        done()
-
-    it 'should return the saved value', (done) ->
-
-      userId = 'user1'
       mongoClient.setOnboardingStatus(userId, 1).then (res) =>
         mongoClient.getOnboardingStatus(userId).then (res) =>
           res.should.be.equal 1
