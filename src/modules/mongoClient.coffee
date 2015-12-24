@@ -32,7 +32,7 @@ class MongoClient
     promise = new Promise (resolve, reject) =>
       @userExists(user.id).then (res) =>
 
-        if res is true
+        if res
           return resolve user
 
         userObj =
@@ -42,6 +42,9 @@ class MongoClient
           tz        : user.tz
           tz_offset : user.tz_offset
           image_48  : user.profile.image_48
+
+        console.log "save user"
+        console.log userObj
 
         @collection.insert userObj, (err, result) ->
           if err is null
