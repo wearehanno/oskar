@@ -24,8 +24,8 @@ describe 'oskar', ->
   # slack stubs, because these methods are unit tested elsewhere
   getUserStub              = sinon.stub slack, 'getUser'
   getUserIdsStub           = sinon.stub slack, 'getUserIds'
-  isUserCommentAllowedStub = sinon.stub slack, 'isUserCommentAllowed'
-  disallowUserCommentStub  = sinon.stub slack, 'disallowUserComment'
+  isUserFeedbackMessageAllowedStub = sinon.stub slack, 'isUserFeedbackMessageAllowed'
+  disallowUserFeedbackMessageStub  = sinon.stub slack, 'disallowUserFeedbackMessage'
   postMessageStub          = sinon.stub slack, 'postMessage'
   postMessageToChannelSpy  = sinon.spy  slack, 'postMessageToChannel'
 
@@ -44,7 +44,7 @@ describe 'oskar', ->
   isOnboardedStub                   = sinon.stub onboardingHelper, 'isOnboarded'
   welcomeStub                       = sinon.stub onboardingHelper, 'welcome'
   advanceStub                       = sinon.stub onboardingHelper, 'advance'
-  retainOnboardingStatusForUsersSpy = sinon.spy onboardingHelper, 'retainOnboardingStatusForUsers'
+  loadOnboardingStatusForUsersSpy   = sinon.spy onboardingHelper, 'loadOnboardingStatusForUsers'
 
   # stub promises
   userExistsStub.returns(whenLib false)
@@ -99,7 +99,7 @@ describe 'oskar', ->
     before ->
       presenceHandlerSpy.restore()
       requestUserFeedbackStub.restore()
-      disallowUserCommentStub.reset()
+      disallowUserFeedbackMessageStub.reset()
 
     it 'should save a non-existing user in mongo', (done) ->
       data =
@@ -130,10 +130,10 @@ describe 'oskar', ->
 
       getUserStub.returns(data)
       oskar.presenceHandler data
-      disallowUserCommentStub.called.should.be.equal true
+      disallowUserFeedbackMessageStub.called.should.be.equal true
 
     after ->
-      disallowUserCommentStub.reset()
+      disallowUserFeedbackMessageStub.reset()
 
 
     ###################################################################
@@ -285,7 +285,7 @@ describe 'oskar', ->
   describe 'messageHandler', ->
 
     before ->
-      isUserCommentAllowedStub.withArgs('user3').returns(whenLib true)
+      isUserFeedbackMessageAllowedStub.withArgs('user3').returns(whenLib true)
 
     beforeEach ->
       composeMessageStub.reset()
@@ -431,7 +431,7 @@ describe 'oskar', ->
         composeMessageStub.args[0][0].should.be.equal message.user
         composeMessageStub.args[0][1].should.be.equal 'feedbackMessageReceived'
         saveUserFeedbackMessageStub.called.should.be.equal true
-        disallowUserCommentStub.called.should.be.equal true
+        disallowUserFeedbackMessageStub.called.should.be.equal true
         done()
       , 1
 

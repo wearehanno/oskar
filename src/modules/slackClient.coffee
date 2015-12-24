@@ -35,7 +35,6 @@ class SlackClient extends EventEmitter
     @slack.on 'message', @messageHandler
 
     promise = new Promise (resolve, reject) =>
-
       # on open, push available users to array
       @slack.on 'open', =>
         for user, attrs of @slack.users when attrs.is_bot is false
@@ -68,17 +67,17 @@ class SlackClient extends EventEmitter
   setUserPresence: (userId, presence) =>
     (user.presence = presence) for user in @users when user.id is userId
 
-  allowUserComment: (userId) ->
+  allowUserFeedbackMessage: (userId) ->
     user = @getUser userId
-    user.allowComment = true
+    user.allowFeedbackMessage = true
 
-  disallowUserComment: (userId) ->
+  disallowUserFeedbackMessage: (userId) ->
     user = @getUser userId
-    user.allowComment = false
+    user.allowFeedbackMessage = false
 
-  isUserCommentAllowed: (userId) ->
+  isUserFeedbackMessageAllowed: (userId) ->
     user = @getUser userId
-    typeof user isnt 'undefined' && typeof user.allowComment isnt 'undefined' && user.allowComment
+    typeof user isnt 'undefined' && typeof user.allowFeedbackMessage isnt 'undefined' && user.allowFeedbackMessage
 
   getfeedbackRequestsCount: (userId) ->
     user = @getUser userId
@@ -91,7 +90,6 @@ class SlackClient extends EventEmitter
     user.feedbackRequestsCount = count
 
   presenceChangeHandler: (data, presence) =>
-
     # when presence changes, set internally and send event
     data =
       userId: data.id
@@ -102,7 +100,6 @@ class SlackClient extends EventEmitter
     @emit 'presence', data
 
   messageHandler: (message) =>
-
     # if user is bot, return
     if !message? || (@getUser message.user) is undefined
       return false
@@ -122,12 +119,10 @@ class SlackClient extends EventEmitter
 
   # post message to slack
   postMessage: (userId, message, cb) =>
-
     # if channels object already exists
     if (userId in @channels)
       return @slack.postMessage @channels[userId].channel.id, message, () ->
         cb()
-
     # otherwise open new one
     @slack.openDM userId, (res) =>
       @channels[userId] = res
@@ -136,7 +131,6 @@ class SlackClient extends EventEmitter
           cb arguments...
 
   postMessageToChannel: (channelId, message, cb) ->
-
     @slack.postMessage channelId, message, () ->
       if (cb)
         cb arguments...

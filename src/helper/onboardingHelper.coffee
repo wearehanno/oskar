@@ -8,20 +8,25 @@ class OnboardingHelper extends EventEmitter
     @mongo = mongo
     @onboardingStatus = {}
 
-  retainOnboardingStatusForUsers: (userIds) =>
-    userIds.forEach @retainOnboardingStatusForUser
+  loadOnboardingStatusForUsers: (userIds) =>
+    userIds.forEach @loadOnboardingStatusForUser
 
-  retainOnboardingStatusForUser: (userId) =>
+  loadOnboardingStatusForUser: (userId) =>
     @mongo.getOnboardingStatus(userId).then (res) =>
       console.log "save onboarding for user #{userId}: #{res}"
       @onboardingStatus[userId] = res
+
+  isOnboardingStatusLoaded: () =>
+    Object.keys(@onboardingStatus).length != 0
 
   isOnboarded: (userId) ->
     console.log "onboarding status #{userId}: " + @onboardingStatus[userId]
     @onboardingStatus[userId] is 3
 
   getOnboardingStatus: (userId) ->
-    @onboardingStatus[userId]
+    if @onboardingStatus.hasOwnProperty(userId)
+      return @onboardingStatus[userId]
+    return 0
 
   setOnboardingStatus: (userId, status) ->
     @onboardingStatus[userId] = status
@@ -29,6 +34,10 @@ class OnboardingHelper extends EventEmitter
       @mongo.setOnboardingStatus userId, status
 
   welcome: (userId) =>
+
+    # return is status object hasn't been initialised yet
+    if !@isOnboardingStatusLoaded
+      return
 
     # only welcome if status is 0
     if @getOnboardingStatus(userId) > 0
@@ -43,6 +52,11 @@ class OnboardingHelper extends EventEmitter
 
   # move on according to status and update user with message
   advance: (userId, message = null) =>
+
+    # return is status object hasn't been initialised yet
+    if !@isOnboardingStatusLoaded
+      return
+
     status = @getOnboardingStatus userId
 
     if status is 0

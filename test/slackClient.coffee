@@ -47,12 +47,6 @@ describe 'SlackClient', ->
 
     describe 'PublicMethods', ->
 
-      it 'should return a list of users', ->
-        users.length.should.be.greaterThan 0
-
-      it 'should get the IDs of all users', ->
-        userIds[0].should.match(/^U\w+$/)
-
       it 'should not contain IDs of disabled users', ->
         if disabledUsers.length
           disabledUsers.forEach (userId) ->
@@ -64,54 +58,47 @@ describe 'SlackClient', ->
         user.profile.first_name.should.be.type 'string'
         user.profile.last_name.should.be.type 'string'
 
-      it 'should return null if user is disabled', ->
-        if disabledUsers.length
-          user = slackClient.getUser(disabledUsers[0])
-          should(user).be.equal(null)
+    describe 'PublicMethodsFeedbackMessage', ->
 
-      it 'should allow a user comment for a user', ->
+      it 'should enable user feedback message', ->
         userId = userIds[0]
-        slackClient.allowUserComment(userId)
+        slackClient.allowUserFeedbackMessage(userId)
         user = slackClient.getUser(userId)
-        user.allowComment.should.be.equal(true)
+        user.allowFeedbackMessage.should.be.equal(true)
 
-      it 'should disallow a user comment for a user', ->
+      it 'should disable user feedback message', ->
         userId = userIds[0]
-        slackClient.disallowUserComment(userId)
+        slackClient.disallowUserFeedbackMessage(userId)
         user = slackClient.getUser(userId)
-        user.allowComment.should.be.equal(false)
+        user.allowFeedbackMessage.should.be.equal(false)
 
-      it 'should return false if user comment is not yet allowed', ->
+      it 'should return false if user feedback message is not yet allowed', ->
         userId = userIds[0]
-        allowed = slackClient.isUserCommentAllowed(userId)
+        allowed = slackClient.isUserFeedbackMessageAllowed(userId)
         allowed.should.be.equal(false)
 
-      it 'should return true if user comment is allowed after setting it', ->
+      it 'should return true if user feedback message is allowed after setting it', ->
         userId = userIds[0]
-        slackClient.allowUserComment(userId)
-        allowed = slackClient.isUserCommentAllowed(userId)
+        slackClient.allowUserFeedbackMessage(userId)
+        allowed = slackClient.isUserFeedbackMessageAllowed(userId)
         allowed.should.be.equal(true)
 
-      it 'should return the number of times oskar has asked this user for help', ->
+    describe 'PublicMethodsRequestsCount', ->
+
+      it 'should return the number of times oskar has asked this user for feedback', ->
         userId = userIds[0]
         number = slackClient.getfeedbackRequestsCount(userId)
         number.should.be.equal(0)
 
-      it 'should set the number of times oskar has asked this user for help', ->
+      it 'should set the number of times oskar has asked this user for feedback', ->
         userId = userIds[0]
         slackClient.setfeedbackRequestsCount(userId, 1)
         number = slackClient.getfeedbackRequestsCount(userId)
         number.should.be.equal(1)
 
-      it 'should post a message to a channel', (done) ->
-        slackClient.postMessageToChannel 'C07AWEMBP', 'test', (args) ->
-          should(args.ok).be.equal true
-          done()
-
     describe 'EventHandlers', ->
 
       it 'should send a presence event when user changes presence', ->
-
         data =
           id: userIds[0]
 
@@ -124,56 +111,37 @@ describe 'SlackClient', ->
         spy.args[0][0].status.should.be.equal('away')
 
       it 'should set the user status when user changes presence', ->
-
         data =
           id: userIds[0]
 
-        slackClient.presenceChangeHandler data, 'away'
-
-        user = slackClient.getUser data.id
-        user.presence.should.be.equal 'away'
-
         slackClient.presenceChangeHandler data, 'active'
-
         user = slackClient.getUser data.id
         user.presence.should.be.equal 'active'
 
-      it 'should return false when message handler is called with no user', ->
-        message =
-          user: undefined
-
-        response = slackClient.messageHandler(message)
-        response.should.be.equal(false)
+    describe 'MessageHandler', ->
 
       it 'should return false when message handler if user is slackbot', ->
-
         message =
           userId: 'USLACKBOT'
-
         response = slackClient.messageHandler(message)
         response.should.be.equal(false)
 
       it 'should return false when message handler is called with a disabled channel', ->
-
         if disabledChannels.length
           message =
             user: userIds[0]
             channel: disabledChannels[0]
-
         response = slackClient.messageHandler(message)
         response.should.be.equal(false)
 
       it 'should return false when message handler is called with a message from broadcast channel', ->
-
         message =
           user: userIds[0]
           channel: 'broadcastChannel'
-
         response = slackClient.messageHandler(message)
         response.should.be.equal(false)
 
       it 'should trigger a message event when message handler is called with a user and valid text is passed', ->
-
         message =
           user: userIds[0]
           text: 'How is <@#{userIds[1]}>?'
@@ -183,7 +151,4 @@ describe 'SlackClient', ->
 
         slackClient.messageHandler message
         spy.called.should.be.equal true
-
-        spy.args[0][0].type.should.be.equal 'input'
-        spy.args[0][0].user.should.be.equal userIds[0]
         spy.args[0][0].text.should.be.equal 'How is <@#{userIds[1]}>?'

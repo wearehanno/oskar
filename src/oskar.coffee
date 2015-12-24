@@ -25,7 +25,7 @@ class Oskar
 
     @slack = slack || new SlackClient()
     @slack.connect().then () =>
-      @onboardingHelper.retainOnboardingStatusForUsers @slack.getUserIds()
+      @onboardingHelper.loadOnboardingStatusForUsers @slack.getUserIds()
 
     @onboardingHelper = onboardingHelper || new OnboardingHelper @mongo
 
@@ -64,7 +64,7 @@ class Oskar
 
     # every hour, disable possibility to comment
     if data.status is 'triggered'
-      @slack.disallowUserComment data.userId
+      @slack.disallowUserFeedbackMessage data.userId
 
     # if presence is not active, return
     user = @slack.getUser data.userId
@@ -90,7 +90,7 @@ class Oskar
       return @revealStatus userId, message
 
     # if comment is allowed, save in DB
-    if @slack.isUserCommentAllowed message.user
+    if @slack.isUserFeedbackMessageAllowed message.user
       return @handleFeedbackMessage message
 
     # if user is asking for help, send a link to the FAQ
@@ -159,7 +159,7 @@ class Oskar
     @mongo.saveUserFeedback message.user, message.text
     @slack.setfeedbackRequestsCount(message.user, 0)
 
-    @slack.allowUserComment message.user
+    @slack.allowUserFeedbackMessage message.user
 
     # get user feedback
     if (parseInt(message.text) < 3)
@@ -202,7 +202,7 @@ class Oskar
   handleFeedbackMessage: (message) =>
 
     # after receiving it, save and disallow comments
-    @slack.disallowUserComment message.user
+    @slack.disallowUserFeedbackMessage message.user
     @mongo.saveUserFeedbackMessage message.user, message.text
     @composeMessage message.user, 'feedbackMessageReceived'
 
