@@ -41,11 +41,6 @@ describe 'OnboardingHelper', ->
       isOnboarded = onboardingHelper.isOnboarded(userId)
       isOnboarded.should.be.equal(true)
 
-    it 'should get the onboarding status that has been set', ->
-      onboardingHelper.setOnboardingStatus('user1', 2)
-      isOnboarded = onboardingHelper.getOnboardingStatus('user1')
-      isOnboarded.should.be.equal 2
-
   describe 'OnboardingEvents', ->
 
     it 'should emit an introduction event when welcome is called and user onboarding status is 0', ->
@@ -82,15 +77,10 @@ describe 'OnboardingHelper', ->
   describe 'OnboardingDatabase', ->
 
     before ->
-      mongoSaveUserFeedbackStub.reset()
-      onboardingHelper.setOnboardingStatus('user1', 2)
+      mongoSetOnboardingStatusStub.reset()
       onboardingHelper.advance('user1', '4')
 
     it 'should save status in mongo when onboarding completed', ->
       mongoSetOnboardingStatusStub.called.should.be.equal true
       mongoSetOnboardingStatusStub.args[0][0].should.be.equal 'user1'
       mongoSetOnboardingStatusStub.args[0][1].should.be.equal 3
-
-      mongoSaveUserFeedbackStub.called.should.be.equal true
-      mongoSaveUserFeedbackStub.args[0][0].should.be.equal 'user1'
-      mongoSaveUserFeedbackStub.args[0][1].should.be.equal '4'
