@@ -11,6 +11,10 @@ class InputHelper
     response = input.match userPattern
     if response?
       return response[1]
+    userPattern = /^How is everyone\??$/i
+    response = input.match userPattern
+    if response?
+      return 'channel'
     return null
 
   @isAskingForHelp: (input) ->

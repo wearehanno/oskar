@@ -27,6 +27,12 @@ describe 'InputHelper', ->
     response = InputHelper.isAskingForUserStatus(text)
     should(response).be.equal 'channel'
 
+  # is asking for user status (channel)
+  it 'should return "channel" if user is asking "How is everyone?"', ->
+    text = 'How is everyone?'
+    response = InputHelper.isAskingForUserStatus(text)
+    should(response).be.equal 'channel'
+
   # is asking for help
   it 'should return true if user is asking for help', ->
     text = 'I need some help'
