@@ -52,14 +52,20 @@ routes = (app, mongo, slack) ->
   # user status
   app.get '/status/:userId', (req, res) =>
     mongo.getUserData(req.params.userId).then (data) =>
-      graphData = data.feedback.map (row) ->
-        return [row.timestamp, parseInt(row.status)]
-
 
       userData              = slack.getUser data.id
-      userData.status       = data.feedback[data.feedback.length - 1]
-      userData.date         = new Date userData.status.timestamp
-      userData.statusString = OskarTexts.statusText[userData.status.status]
+
+      # status
+      if userData && userData.hasOwnProperty 'status' && userData.status isnt null
+        userData.date         = new Date userData.status.timestamp
+        userData.statusString = OskarTexts.statusText[userData.status.status]
+
+      # graph data
+      graphData = {}
+      if data.hasOwnProperty 'feedback'
+        graphData = data.feedback.map (row) ->
+          return [row.timestamp, parseInt(row.status)]
+        userData.status = data.feedback[data.feedback.length - 1]
 
       res.render('pages/status', { userData: userData, graphData: JSON.stringify(graphData) })
 

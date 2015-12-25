@@ -16,18 +16,30 @@
           <div class="row">
 
             <article class="post-listing__listing-item post-listing__listing-item--detail text-center">
-              <img class="thumbnail post-listing__listing-item__thumbnail" src="<%= userData.profile.image_192 %>">
+              <% if (userData.profile) { %>
+                <img class="thumbnail post-listing__listing-item__thumbnail" src="<%= userData.profile.image_192 %>">
+              <% } %>
               <h2 class="post-listing__listing-item__entry-title entry-title">
-                <%= userData.real_name %> is feeling <% if(userData && userData.status) {%>
-                <span class="status-<%= userData.status.status %>"><%= userData.statusString %></span>
+                <% if (userData.status) { %>
+                  <%= userData.real_name %> is feeling <% if(userData && userData.status) {%>
+                  <span class="status-<%= userData.status.status %>"><%= userData.statusString %></span>
+                  <% } %>
+                <% } else { %>
+                <span><%= userData.real_name %> hasn't submitted any status yet</span>
                 <% } %>
               </h2>
               <p class="entry-summary">
-                <span>Last reported:</span>
-                <abbr class="timeago" title="<%= userData.date.toISOString() %>">
-                  <%= userData.date.getDate() %>.<%= userData.date.getMonth() + 1 %>.<%= userData.date.getFullYear() %>
-                  <%= userData.date.getHours() %>:<%= userData.date.getMinutes() %>
-                </abbr>
+                <% if (userData.date) { %>
+                  <span>Last reported:</span>
+                  <% if (userData.date) { %>
+                    <abbr class="timeago" title="<%= userData.date.toISOString() %>">
+                      <%= userData.date.getDate() %>.<%= userData.date.getMonth() + 1 %>.<%= userData.date.getFullYear() %>
+                      <%= userData.date.getHours() %>:<%= userData.date.getMinutes() %>
+                    </abbr>
+                  <% } %>
+                <% } else { %>
+                  <span>It will show up here once user has onboarded</span>
+                <% } %>
               </p>
               <p class="feedback-message">
                 <% if(userData.status && userData.status.message) {%>

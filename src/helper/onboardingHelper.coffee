@@ -20,7 +20,7 @@ class OnboardingHelper extends EventEmitter
     Object.keys(@onboardingStatus).length != 0
 
   isOnboarded: (userId) ->
-    console.log "onboarding status #{userId}: " + @onboardingStatus[userId]
+    console.log "onboarding status #{userId}: " + @getOnboardingStatus(userId)
     @getOnboardingStatus(userId) is 3
 
   getOnboardingStatus: (userId) ->
