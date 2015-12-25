@@ -35,7 +35,7 @@ describe 'InputHelper', ->
 
   # is status and feedback
   it 'should return the status number and feedback message', ->
-    text = '3: feeling average :confused:'
+    text = "3: feeling's are average :confused:"
     response = InputHelper.isStatusAndFeedback text
     response.status.should.be.equal '3'
-    response.message.should.be.equal 'feeling average :confused:'
+    response.message.should.be.equal "feeling's are average :confused:"
