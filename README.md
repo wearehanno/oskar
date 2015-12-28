@@ -42,6 +42,8 @@ _Find instructions on how to set a username/password for your team metrics, belo
 
 ## Configuring Oskar
 
+### Basic Setup
+
 There are two ways of configuring Oskar.
 
 1) Using local configuration:
@@ -54,17 +56,24 @@ Here's the config variables you need to define:
 - `mongo.url` (or `MONGOLAB_URI` for Heroku) defines the url to your MongoDB database (to create a mongoDB on Heroku, go to https://elements.heroku.com/addons/mongolab). This will be automatically generated if you create a MongoLab database as described below ("Setting up Oskar on Heroku") in step 4.
 - `slack.token` (or `SLACK_TOKEN` for Heroku) is the token of your team's Slackbot (you can create a new Slackbot here: https://yourteam.slack.com/services/new/bot)
 
-If you want to broadcast all user feedback to a channel instead of to each user individually:
-- `slack.channelId` (or `CHANNEL_ID` for Heroku) defines the channel where Oskar will broadcast all user messages. Add this parameter if you don't want Oskar to send the status feedback to each user's direct message channel. On Heroku, don't add quotes around the parameter, just the channel ID: CXXXXXX. You can find out our your Slack channel IDs [here](https://api.slack.com/methods/channels.list/test).
+### Post all feedback messages to a group or channel
 
-Additionally you can disable specific channels or users:
-- `slack.disabledUsers` (or `DISABLED_USERS` for Heroku) to disable **users** if you want specific people on your team to not receive any Oskar messages at all (Go [here](https://api.slack.com/methods/users.list/test) to find out your user IDs). When using Heroku, make sure to put the list IDs into quotes like this: "UXXXXXX", "UYYYYYY"
-- `slack.disabledChannels` (or `DISABLED_CHANNELS` for Heroku) to disable **channels** that Oskar is part of (Go [here](https://api.slack.com/methods/channels.list/test) to find out your channel IDs). When using Heroku, be sure to put the user IDs into quotes like this: "CXXXXXX", "CYYYYYY"
+If you want to broadcast all user feedback to a channel instead of sending every status message to each user on your team via direct message, you can set the `slack.channelId` (or `CHANNEL_ID` for Heroku) config variable.
+
+This defines the channel or group where Oskar will broadcast all user messages. On Heroku, don't add quotes around the parameter, just the channel ID: `CXXXXXX`. 
+
+You can find out our your Slack channel IDs [here](https://api.slack.com/methods/channels.list/test).
+
+### Additionally you can disable specific channels or users:
+
+Set `slack.disabledUsers` (or `DISABLED_USERS` for Heroku) to disable specific **users** if you want certain people on your team to not receive any Oskar messages at all. Go [here](https://api.slack.com/methods/users.list/test) to find out your user IDs. When using Heroku, be sure to put the list IDs into quotes like this: "UXXXXXX", "UYYYYYY"
+
+Set `slack.disabledChannels` (or `DISABLED_CHANNELS` for Heroku) to disable **channels** that Oskar is part of (Go [here](https://api.slack.com/methods/channels.list/test) to find out your channel IDs). When using Heroku, be sure to put the user IDs into quotes like this: `"CXXXXXX", "CYYYYYY"`.
+
+### Configure dashboard password protection
 
 By default your dashboard is protected via a simple HTTP auth mechanism. (we'll try to improve this in the future)
 - `auth.username` and `auth.password` (or `AUTH_USERNAME` and `AUTH_PASSWORD` for Heroku) define your login data for the dashboard. Make sure to share those with your team.
-
-See the following instructions if you set up Oskar for the first time.
 
 # Development and Contributing
 
