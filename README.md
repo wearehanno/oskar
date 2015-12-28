@@ -55,11 +55,11 @@ Here's the config variables you need to define:
 - `slack.token` (or `SLACK_TOKEN` for Heroku) is the token of your team's Slackbot (you can create a new Slackbot here: https://yourteam.slack.com/services/new/bot)
 
 If you want to broadcast all user feedback to a channel instead of to each user individually:
-- `slack.channelId` (or `CHANNEL_ID` for Heroku) defines the channel where Oskar will broadcast all user messages. Add this parameter if you don't want Oskar to send the status feedback to each user's direct message channel. On Heroku, don't add quotes around the parameter, just the channel ID: CXXXXXX
+- `slack.channelId` (or `CHANNEL_ID` for Heroku) defines the channel where Oskar will broadcast all user messages. Add this parameter if you don't want Oskar to send the status feedback to each user's direct message channel. On Heroku, don't add quotes around the parameter, just the channel ID: CXXXXXX. You can find out our your Slack channel IDs [here](https://api.slack.com/methods/channels.list/test).
 
 Additionally you can disable specific channels or users:
-- `slack.disabledUsers` (or `DISABLED_USERS` for Heroku) to disable **users** if you want specific people on your team to not receive any Oskar messages at all (Go here to find out your user IDs: https://api.slack.com/methods/users.list/test). When using Heroku, make sure to put the list IDs into quotes like this: "UXXXXXX", "UYYYYYY"
-- `slack.disabledChannels` (or `DISABLED_CHANNELS` for Heroku) to disable **channels** that Oskar is part of (Go here to find out your channel IDs: https://api.slack.com/methods/channels.list/test). When using Heroku, make sure to put the user IDs into quotes like this: "CXXXXXX", "CYYYYYY"
+- `slack.disabledUsers` (or `DISABLED_USERS` for Heroku) to disable **users** if you want specific people on your team to not receive any Oskar messages at all (Go [here](https://api.slack.com/methods/users.list/test) to find out your user IDs). When using Heroku, make sure to put the list IDs into quotes like this: "UXXXXXX", "UYYYYYY"
+- `slack.disabledChannels` (or `DISABLED_CHANNELS` for Heroku) to disable **channels** that Oskar is part of (Go [here](https://api.slack.com/methods/channels.list/test) to find out your channel IDs). When using Heroku, be sure to put the user IDs into quotes like this: "CXXXXXX", "CYYYYYY"
 
 By default your dashboard is protected via a simple HTTP auth mechanism. (we'll try to improve this in the future)
 - `auth.username` and `auth.password` (or `AUTH_USERNAME` and `AUTH_PASSWORD` for Heroku) define your login data for the dashboard. Make sure to share those with your team.
