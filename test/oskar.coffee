@@ -17,7 +17,7 @@ OnboardingHelper = require '../src/helper/onboardingHelper'
 
 describe 'oskar', ->
 
-  mongo            = new MongoClient()
+  mongo            = new MongoClient('mongodb://127.0.0.1:27017/users')
   slack            = new SlackClient()
   onboardingHelper = new OnboardingHelper()
 
@@ -224,6 +224,18 @@ describe 'oskar', ->
         broadcastUserStatusSpy.args[0][0].should.be.equal message.user
         broadcastUserStatusSpy.args[0][1].should.be.type 'number'
         broadcastUserStatusSpy.args[0][2].should.be.equal message.text
+        done()
+      , 1
+
+    it 'should send the channels status to the user that requested it', (done) ->
+
+      message =
+        text: 'not feeling so great'
+        user: 'user1'
+
+      oskar.revealStatus 'channel', message
+      setTimeout ->
+        composeMessageStub.args[0][1].should.be.equal 'revealChannelStatus'
         done()
       , 1
 

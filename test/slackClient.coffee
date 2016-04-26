@@ -16,7 +16,7 @@ describe 'SlackClient', ->
 
   before ->
     process.env.CHANNEL_ID = 'broadcastChannel'
-    slackClient = new SlackClient(null, 'xoxb-7369872208-yv3ZYe8kqwBDn8ugClt8wchL')
+    slackClient = new SlackClient(null, 'xoxb-37819774417-2FIiAV6KuY3KNtvlV41qrkCV')
     connect     = slackClient.connect()
 
   this.timeout 10000
@@ -141,7 +141,7 @@ describe 'SlackClient', ->
         response = slackClient.messageHandler(message)
         response.should.be.equal(false)
 
-      it 'should trigger a message event when message handler is called with a user and valid text is passed', ->
+      it 'should trigger a message event when message handler is called with a user and text that asks for user status', ->
         message =
           user: userIds[0]
           text: 'How is <@#{userIds[1]}>?'
@@ -152,3 +152,15 @@ describe 'SlackClient', ->
         slackClient.messageHandler message
         spy.called.should.be.equal true
         spy.args[0][0].text.should.be.equal 'How is <@#{userIds[1]}>?'
+
+      it 'should trigger a message event when message handler is called with a user and text that asks for channel status', ->
+        message =
+          user: userIds[0]
+          text: 'How is everyone?'
+
+        spy = sinon.spy()
+        slackClient.on 'message', spy
+
+        slackClient.messageHandler message
+        spy.called.should.be.equal true
+        spy.args[0][0].text.should.be.equal 'How is everyone?'

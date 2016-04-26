@@ -181,6 +181,7 @@ class Oskar
       @revealStatusForUser(message.user, userId)
 
   revealStatusForChannel: (userId) =>
+    console.log "REVEAL STATUS OF CHANNEL FOR USER:", userId
     userIds = @slack.getUserIds()
     @mongo.getAllUserFeedback(userIds).then (res) =>
       @composeMessage userId, 'revealChannelStatus', res
@@ -254,9 +255,13 @@ class Oskar
       obj.forEach (user) =>
         userObj = @slack.getUser user.id
         name = userObj.profile.first_name || userObj.name
-        statusMsg += OskarTexts.revealChannelStatus.status.format name, user.feedback.status
-        if user.feedback.message
-          statusMsg += OskarTexts.revealChannelStatus.message.format user.feedback.message
+        if !user.feedback
+          statusMsg += OskarTexts.revealChannelStatus.error.format name
+
+        else
+          statusMsg += OskarTexts.revealChannelStatus.status.format name, user.feedback.status
+          if user.feedback.message
+            statusMsg += OskarTexts.revealChannelStatus.message.format user.feedback.message
         statusMsg += "\r\n"
 
     # user info

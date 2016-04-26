@@ -13,14 +13,12 @@ class OnboardingHelper extends EventEmitter
 
   loadOnboardingStatusForUser: (userId) =>
     @mongo.getOnboardingStatus(userId).then (res) =>
-      console.log "save onboarding for user #{userId}: #{res}"
       @setOnboardingStatus userId, res
 
   isOnboardingStatusLoaded: () =>
     Object.keys(@onboardingStatus).length != 0
 
   isOnboarded: (userId) ->
-    console.log "onboarding status #{userId}: " + @getOnboardingStatus(userId)
     @getOnboardingStatus(userId) is 3
 
   getOnboardingStatus: (userId) ->

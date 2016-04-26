@@ -44,6 +44,7 @@ OskarTexts =
   faq: "Looks like you need a little help. Here's the link to the <http://oskar.herokuapp.com/faq|Oskar FAQ>"
 
   revealChannelStatus:
+    error: "*{0}* hasn\'t submitted a status yet."
     status: "*{0}* is feeling *{1}/5*"
     message: "\n>\"{0}\""
 
