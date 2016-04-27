@@ -74,15 +74,15 @@ OskarTexts =
   ]
 
   averageFeedback: [
-    "Alright! Go get em :tiger: If you've got something you want to share, feel free. If not, have a grrreat day!",
-    "Good luck with powering through things. if you've got something you want to share, feel free.",
-    "That's alright. We can't all be having crazy highs and killer lows. Sometimes a little bit of normality is If you feel like telling me more, feel free!"
+    "Alright! Go get em :tiger: *If you've got something you want to share, feel free. If not, have a grrreat day!*",
+    "Good luck with powering through things. *If you've got something you want to share, feel free.*",
+    "That's alright. We can't all be having crazy highs and killer lows. *If you feel like telling me more, feel free!*"
   ]
 
   highFeedback: [
-    ":trophy: Winning! It's so great to hear that. Wanna tell me why things are going so well?",
-    ":thumbsup: looks like you're on :fire: today. Is there anything you'd like to share with the team?",
-    "There's nothing I like more than great feedback! :clap::skin-tone-4: What's made you feel so awesome today?"
+    ":trophy: Winning! It's so great to hear that. *Why not type a message to let your team know why things are going so well?*",
+    ":thumbsup: looks like you're on :fire: today. *Is there anything you'd like to share with the team?*",
+    "There's nothing I like more than great feedback! :clap::skin-tone-4: *What's made you feel so awesome today?*"
   ]
 
   # feedback already received
