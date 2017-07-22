@@ -32,6 +32,7 @@ class MongoClient
     promise = new Promise (resolve, reject) =>
       @userExists(user.id).then (res) =>
 
+        console.log 'res'
         console.log res
 
         if res

@@ -54,7 +54,7 @@ describe 'MongoClient', ->
 
   describe 'MongoClientUsers', ->
 
-    before ->
+    before (done) ->
       connect.then (res) ->
         db = res
         collection = db.collection 'users'
@@ -69,6 +69,7 @@ describe 'MongoClient', ->
         # save user 2
         mongoClient.saveUser(users[1]).then (res) ->
           console.log 'user 2 saved'
+          done()
 
     it 'should not save the same user twice', (done) ->
       mongoClient.saveUser(users[0]).then (res) ->
