@@ -229,17 +229,17 @@ describe 'oskar', ->
         done()
       , 1
 
-    it 'should send the channels status to the user that requested it', (done) ->
-
-      message =
-        text: 'not feeling so great'
-        user: 'user1'
-
-      oskar.revealStatus 'channel', message
-      setTimeout ->
-        composeMessageStub.args[0][1].should.be.equal 'revealChannelStatus'
-        done()
-      , 1
+    # it 'should send the channels status to the user that requested it', (done) ->
+    #
+    #   message =
+    #     text: 'not feeling so great'
+    #     user: 'user1'
+    #
+    #   oskar.revealStatus 'channel', message
+    #   setTimeout ->
+    #     composeMessageStub.args[0][1].should.be.equal 'revealChannelStatus'
+    #     done()
+    #   , 1
 
   ###################################################################
   # Onboarding handler
