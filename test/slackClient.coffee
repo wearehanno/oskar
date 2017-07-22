@@ -16,10 +16,10 @@ describe 'SlackClient', ->
 
   before ->
     process.env.CHANNEL_ID = 'broadcastChannel'
-    slackClient = new SlackClient(null, 'xoxb-37819774417-r7dpruecNXI1heSuhUfIwbAG')
+    slackClient = new SlackClient(null, 'xoxb-37819774417-QuZwoLJLCmqgwa2GIE115oSy')
     connect     = slackClient.connect()
 
-  this.timeout 10000
+  this.timeout 20000
 
   it 'should connect to the slack client', (done) ->
     connect.then (res) ->
