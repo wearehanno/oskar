@@ -1,20 +1,19 @@
 language: node_js
 node_js:
-- '7.3.0'
+- 7.3.0
 addons:
   apt:
     sources:
-      - ubuntu-toolchain-r-test
+    - ubuntu-toolchain-r-test
     packages:
-      - g++-4.8
-      - xvfb
-      - libgnome-keyring-dev
-env:
-  CXX=g++-4.8      
+    - g++-4.8
+    - xvfb
+    - libgnome-keyring-dev
+env: CXX=g++-4.8
 before_install: npm install -g grunt-cli
 services: mongodb
 deploy:
   provider: heroku
   app: hanno-oskar
   api_key:
-    secure: TB+vB1ILxKR/1iSpWI49MU3Uxti4JvXOs5URkWkFV0Gie8pGWbIgHHo1ZXh7fUpOYw1m3p0plQdl6iNNYGChOgSOb8Lbn3/2q829dc/6Jc5NjvA1nsB+VFf6XTqZUfTR57hSEhZKUhglLW1zWvWXZ/+2BqvoGPrPNq2Ox7Btwzta0knncjIiZTVqbuS5T0xd/dwwVwJkLXPkXre3ZTlKQoq1eVt8MDyFAgxE0Lb+Z35AlowmBETLDLm6e09i9lQqumOwNgUq2oqOENWfTaXL1y10Kf4lsZZqnMqv+GoYsqCCqCerd4gZWBxBgwMCnO5tByGeKGF5I8DpdbGjKkyivE1iqU70rdwVSFVVOuXF3uOG/L7jlzXHCJD7lE//iCZ5ddWutI8BU7LPKrbTcOTiL6Lc6EtdhdT2WJqq71dVnNpaiD0NoK2vGdwhRNz8dmPUgUu/uAhov52Y7tUrJL1rYXqRnnzt1xq81TPhtbFqgT7JL/P2aAuTBXD6Kl5A8nfAn/ec2HAzGBWsGKhlFVqTLzALXLWJUiqc0D/eXvlVN7RSx4O7vfCk9ZQ0F6F/wr0FtJ2Oqy8HjRlowck+ZeGTDwE/TbzlwRa7OlcAD5qjaV4rsQNtpurErUEThDUNMaCDsL+/wvtCVqNlU/J2wb/Y42XEO/BjukMZxg0F59Xn2WQ=
+    secure: Jf8YdNKE9LUiTSOCbOAhmFCE+euSiV4StnWOiQA8mTBMwuQKDDVaC9YdoTQAfrErXtSjN+gopN2WyFjqNlYGOSTUKKXAxK3FzVITkcnq0xbtJNJA3Lc38HIJMULCNRgXLBC+lnpIRQ88107fTfh27VJg01gbljO/7eii6k89dl6y1nQaEURSeuYJ8HOqrBNV3rMSZ5epQZahGxSMmZrGzCd87EMsDt/bDaJFcpoREQ5ELqXvQz4C7cpIdRgKK4+xtZxTW1qTuachIaa60XdAUdjUFJ/nenocjq2i2aLkXPLQJLlFe+9wOHgrxK4fzXdT3Y1eSK7bdpkrEu98evJZlLobESCx+kLK5nJNnw0SWtwqiynIfJl+y2mArcFSuxAxQUkZPWAXaLjYt6GNyVayKINi/ratvOOCeWdYe0IoVXIjyzPrl5/in3yjwGWUX3d7/JkJy/e1NXQP6DT4yQ1ArFGWEB1cB85tOBeSiqd18eL/42r3c+HuiKh8C9sxI/D+JMGWh7kC6roRyozESt57t1KP6gGto3nT4n2DlnmomvWV0cwvid0inJ4ki0r8nixvDEtnUIlvqVTc0X28bh0ZpnwGkvdPj7jZmAQFcfc/43gE2/JF4oGHOV3EbMQLgQUzDahGrWvqlSp95c/5cnNE1WhdFfR6nCf0ZSWdCvlY0qc=
