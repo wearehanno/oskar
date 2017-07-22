@@ -9,6 +9,8 @@ addons:
       - g++-4.8
       - xvfb
       - libgnome-keyring-dev
+env:
+  CXX=g++-4.8      
 before_install: npm install -g grunt-cli
 services: mongodb
 deploy:
