@@ -66,6 +66,8 @@ routes = (app, mongo, slack) ->
         graphData = data.feedback.map (row) ->
           return [row.timestamp, parseInt(row.status)]
         userData.status = data.feedback[data.feedback.length - 1]
+        userData.date = new Date userData.status.timestamp
+        userData.statusString = OskarTexts.statusText[userData.status.status]
 
       res.render('pages/status', { userData: userData, graphData: JSON.stringify(graphData) })
 
