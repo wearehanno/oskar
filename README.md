@@ -1,5 +1,7 @@
 # Oskar - the Slack satisfaction coach
 
+## Note: Oskar is currently not being actively maintained and has a number of issues, so may not be suitable for use in production 🙂
+
 [![Build Status](https://travis-ci.org/wearehanno/oskar.svg?branch=master)](https://travis-ci.org/wearehanno/oskar)
 
 ## Description
