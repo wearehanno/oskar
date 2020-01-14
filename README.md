@@ -98,7 +98,7 @@ You might find this helpful, if you're setting up MongoDB for the first time:
 
 ###Run the app
 
-    # will start MongoDB on port 27071 and initialise the database
+    # will start MongoDB on port 27017 and initialise the database
     $ mongod
 
     # Install the dependencies
