@@ -55,8 +55,8 @@ describe 'SlackClient', ->
       it 'should get a user', ->
         user = slackClient.getUser userIds[0]
         user.name.should.be.type 'string'
-        user.profile.first_name.should.be.type 'string'
-        user.profile.last_name.should.be.type 'string'
+        user.profile.real_name.should.be.type 'string'
+        user.profile.display_name.should.be.type 'string'
 
     describe 'PublicMethodsFeedbackMessage', ->
 
