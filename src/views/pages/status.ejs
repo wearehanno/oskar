@@ -21,7 +21,7 @@
               <% } %>
               <h2 class="post-listing__listing-item__entry-title entry-title">
                 <% if (userData.status) { %>
-                  <%= userData.real_name %> is feeling <% if(userData && userData.status) {%>
+                  <%= userData.real_name || userData.name %> is feeling <% if(userData && userData.status) {%>
                   <span class="status-<%= userData.status.status %>"><%= userData.statusString %></span>
                   <% } %>
                 <% } else { %>

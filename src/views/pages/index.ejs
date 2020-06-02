@@ -35,7 +35,7 @@
 
                         <!-- User -->
                         <h2 class="post-listing__listing-item__entry-title entry-title">
-                          <%= user.profile.first_name %> <% if(statuses[user.id] && statuses[user.id].status) {%>
+                          <%= user.profile.first_name || user.name %> <% if(statuses[user.id] && statuses[user.id].status) {%>
                             is feeling  <span class="status-<%= statuses[user.id].status %>"><%= statuses[user.id].statusString %></span>
                           <% } else { %>
                             hasn't submitted any status yet
